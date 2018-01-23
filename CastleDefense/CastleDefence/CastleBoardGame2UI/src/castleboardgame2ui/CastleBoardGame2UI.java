@@ -74,7 +74,7 @@ public class CastleBoardGame2UI {
         String diceNumber = "";
         Integer diceInt = 0;
         Random rand = new Random();
-
+        //HIIII
         //generates a random interger from 1 to 6
         diceInt = rand.nextInt(6) + 1;
         System.out.println("Hello");
