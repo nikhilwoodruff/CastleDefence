@@ -47,6 +47,7 @@ public class CastleBoardGame2UI {
         //Testing
         //Hi
         //Nikhil
+        //jeghsklf
 
         //adds the panels to the frame and sets the size of the frame
         frame.add(RefreshPanel2(null));
