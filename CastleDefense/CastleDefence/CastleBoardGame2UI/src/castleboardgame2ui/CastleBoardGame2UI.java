@@ -62,6 +62,7 @@ public class CastleBoardGame2UI {
      */
     public static void main(String[] args) {
         CastleBoardGame2UI cbg = new CastleBoardGame2UI();
+        //test
     }
 
     static String rollTheDice() {
