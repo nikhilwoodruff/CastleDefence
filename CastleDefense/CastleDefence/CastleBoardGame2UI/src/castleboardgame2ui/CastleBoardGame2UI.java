@@ -16,7 +16,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,57 +40,51 @@ public class CastleBoardGame2UI {
     //ANIMATION VALUES
     int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
-    int turn;
+    int moving = 0;
+    ArrayList<MovementAnimation> anim = new ArrayList<>();
+    ArrayList<MovementAnimation> toRemove = new ArrayList<>();
+    JFrame frame = new JFrame();
+    ArrayList<JLabel> pieces = new ArrayList<>();
+    ArrayList<JLabel> highlighters = new ArrayList<>();
+    int[][] directions = new int[][] {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
     
-     JFrame frame = new JFrame();
-    
-    public CastleBoardGame2UI(){        
-      
-        
-        //Creates a new Jframe
-        //adds the panels to the frame and sets the size of the frame
-        
+    public CastleBoardGame2UI(){     
+        //Creates a new JFrame
+        //Adds the panels to the frame and sets the size of the frame
         frame.add(RefreshPanel2(null));
         frame.add(RefreshPanel1());
         frame.setSize(1250, 1025);
-
-        //sets the default operation of the frame and set it to be visible to the user
+        //Sets the default operation of the frame and set it to be visible to the user
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
-         // RefreshFrame();
+        frame.setLocationRelativeTo(null);
+        //RefreshFrame();
     }
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         CastleBoardGame2UI cbg = new CastleBoardGame2UI();
-        //test
     }
-
+    // TO REPLACE WITH ANIMATED DICE...
     static String rollTheDice() {
-
-        //declares and intialises the variables needed
+        //Declares and intialises the variables needed
         String diceNumber = "";
         Integer diceInt = 0;
         Random rand = new Random();
-        //generates a random interger from 1 to 6
+        //Generates a random interger from 1 to 6
         diceInt = rand.nextInt(6) + 1;
         System.out.println("Hello");
-
-        // passes the interger to a string
+        //Passes the interger to a string
         diceNumber = diceInt.toString();
-
-        //returns the string value
+        //Returns the string value
         return diceNumber;
     }
-
     public JPanel RefreshPanel2(String overide) {
-
-        //creates a new JPanel 
+        //Creates a new JPanel 
         JPanel panel2 = new JPanel();
-
-        //creates and itialises the needed JLabels
+        //Creates and initialises the needed JLabels
         JLabel text = new JLabel("Status");
         Button Dice = new Button("Roll the dice");
         JLabel diceLabel = new JLabel("0");
@@ -103,78 +96,50 @@ public class CastleBoardGame2UI {
 //        }
 //        Image dimgL = imgL.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 //        ImageIcon leatherImage = new ImageIcon(dimgL);
-
-        //sets up the settings of the Panel
+        //Sets up the settings of the Panel
         panel2.setSize(new Dimension(200, 1000));
         panel2.setBackground(Color.lightGray);
         panel2.setLocation(1050, 0);
-
-        //sets the sizes of the JLables
+        //Sets the sizes of the JLabels
         Dice.setMaximumSize(new Dimension(200, 50));
         Dice.setMinimumSize(new Dimension(200, 50));
-
-        //adds the JLables to the Panel
+        //Adds the JLables to the Panel
         panel2.add(text);
         panel2.add(Dice);
         panel2.add(diceLabel);
         panel2.add(CombatStrenght);
-
-        //sets the Panel layout to BoxLayout
+        //Sets the Panel layout to BoxLayout
         panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
-
-        //adds a new action listener that cretates a new thread when the button is pressed to activate the mouse throwing animation
+        //Adds a new action listener that cretates a new thread when the button is pressed to activate the mouse throwing animation
         Dice.addActionListener(new ActionListener() {
-
             @Override
-
             public void actionPerformed(ActionEvent ae) {
-
                 Button btn = (Button) ae.getSource();
                 DiceThread dt = new DiceThread(diceLabel);
                 Thread t = new Thread(dt);
-
-                t.start();
-                
-
-                
-                 HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/DiceSound.wav"));
-                //sound.HandleSound(new File("DiceSound.wav"));
-
+                t.start();                          
+                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/DiceSound.wav"));
+                //Sound.HandleSound(new File("DiceSound.wav"));
             }
         });
-
-        //returns the value of the Panel
+        //Returns the value of the Panel
         return panel2;
-
     }
-
      void RefreshFrame() {
         frame.repaint();
         frame.validate();
     }
-       int moving = 0;
-       ArrayList<MovementAnimation> anim = new ArrayList<>();
-       ArrayList<MovementAnimation> toRemove = new ArrayList<>();
     public JPanel RefreshPanel1() {
         MovementAnimation.enableAnimation(anim, toRemove);
-        //creates a new Jpanel
+        //Creates a new JPanel
         JPanel panel = new JPanel();
-        //creates the variables needed 
+        //Creates the variables needed 
         JLabel dirt = new JLabel("");
         JLabel grass = new JLabel("");
         JLabel[] stone = new JLabel[100];
-        ArrayList<JLabel> pieces = new ArrayList<>();
-        ArrayList<JLabel> highlighters = new ArrayList<>();
-        
-        int[][] directions = new int[][] {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
-        
         int boardWidth = 21;
         int boardHeight = 20;
-        
-       
-       
-        
-        //loads dirt image
+        //Loads dirt image
         BufferedImage imgD = null;    
         try {
             imgD = ImageIO.read((CastleBoardGame2UI.class.getResourceAsStream("/Resorces/DirtTexture.jpg")));
@@ -183,8 +148,7 @@ public class CastleBoardGame2UI {
         }
         Image dimgD = imgD.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon dirtImage = new ImageIcon(dimgD);
-
-        //loads stone image
+        //Loads stone image
         BufferedImage imgG = null;
         try {
             imgG = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/GrassTexture.jpg"));
@@ -192,8 +156,7 @@ public class CastleBoardGame2UI {
         }
         Image dimgG = imgG.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon grassImage = new ImageIcon(dimgG);
-
-        //loads stone image
+        //Loads stone image
         BufferedImage imgS = null;
         try {
             imgS = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/StoneTexture.jpg"));
@@ -201,8 +164,7 @@ public class CastleBoardGame2UI {
         }
         Image dimgS = imgS.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon stoneImage = new ImageIcon(dimgS);
-
-        //loads castle interior iamge
+        //Loads castle interior iamge
         BufferedImage imgI = null;
         try {
             imgI = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/InternalTexture.jpg"));
@@ -210,8 +172,7 @@ public class CastleBoardGame2UI {
         }
         Image dimgI = imgI.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon InteriorImage = new ImageIcon(dimgI);
-        
-        //load counter images
+        //Loads counter images
         BufferedImage imgC = null;
         try {
             imgC = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/red.png"));
@@ -226,7 +187,7 @@ public class CastleBoardGame2UI {
         }
         Image dimgC2 = imgC2.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon CounterImage2 = new ImageIcon(dimgC2);
-        //load highlighter image
+        //Loads highlighter image
         BufferedImage imgH = null;
         try {
             imgH = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/highlight.png"));
@@ -234,15 +195,15 @@ public class CastleBoardGame2UI {
         }
         Image dimgH = imgH.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon HighlightImage = new ImageIcon(dimgH);
-        
+        //Loads dice image
         BufferedImage imgDi = null;
         try {
             imgDi = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/DiceImage2.png"));
         } catch (IOException e) {
         }
         Image dimgDi = imgDi.getScaledInstance(50, 920, Image.SCALE_SMOOTH);
-        ImageIcon DiceImage = new ImageIcon(imgDi);
-        //create pieces
+        ImageIcon DiceImage = new ImageIcon(dimgDi);
+        //Create pieces
         for(int i = 0; i < 5; i++)
         {
             pieces.add(new JLabel());
@@ -256,7 +217,7 @@ public class CastleBoardGame2UI {
             pieces.get(pieces.size() - 1).setLocation(50 * (i+11), 50);
             pieces.get(pieces.size() - 1).setSize(50, 50);
         }
-        //create highlighters
+        //Create highlighters
         for(int j = 0; j < 8; j++)
         {
             highlighters.add(new JLabel());
@@ -265,7 +226,7 @@ public class CastleBoardGame2UI {
             highlighters.get(highlighters.size() - 1).setLocation(50 * (j+1), 250);
             highlighters.get(highlighters.size() - 1).setSize(50, 50);
         }
-        //create dice
+        //Create dice
         JLabel dice = new JLabel();
         dice.setBackground(new Color(0, 0, 0, 0));
         dice.setVisible(true);
@@ -273,7 +234,7 @@ public class CastleBoardGame2UI {
         dice.setLocation(1000, 0);
         dice.setSize(50, 920);
         panel.add(dice);
-        //give the pieces behaviour
+        //Give the pieces behaviour (this is a long one)
         int count1 = 0;
         for(JLabel piece : pieces)
         {
@@ -284,15 +245,9 @@ public class CastleBoardGame2UI {
                     return super.clone();
                 }
                 @Override
-                public void mouseClicked(java.awt.event.MouseEvent evt)
-                {
-                    
-                }
-
+                public void mouseClicked(java.awt.event.MouseEvent evt){}
                 @Override
-                public void mousePressed(MouseEvent e) {
-                }
-
+                public void mousePressed(MouseEvent e) {}
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if(pieces.indexOf(piece) % 2 == 0)
@@ -302,14 +257,11 @@ public class CastleBoardGame2UI {
                     moving = countFinal;
                     setUpHighlighters(pieces, moving, highlighters, anim, directions);
                 }
+                @Override
+                public void mouseEntered(MouseEvent e) {}
 
                 @Override
-                public void mouseEntered(MouseEvent e) {
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                }
+                public void mouseExited(MouseEvent e) {}
             };
             count1++;
             piece.addMouseListener(ml);
@@ -317,8 +269,7 @@ public class CastleBoardGame2UI {
         int count = 0;
         for(JLabel label : highlighters)
         {
-//            label.setLocation(625, 1100);
-            label.setLocation(250, 250);
+            label.setLocation(625, 1100);
             final int countFinal = count;
             MouseListener ml = new MouseListener() {
                 @Override
@@ -326,13 +277,9 @@ public class CastleBoardGame2UI {
                     return super.clone();
                 }
                 @Override
-                public void mouseClicked(java.awt.event.MouseEvent evt){
-                }
-
+                public void mouseClicked(java.awt.event.MouseEvent evt){}
                 @Override
-                public void mousePressed(MouseEvent e) {
-                }
-
+                public void mousePressed(MouseEvent e) {}
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     //When a direction pointer is clicked...
@@ -353,19 +300,15 @@ public class CastleBoardGame2UI {
                     Point proxy = target.getLocation();
                     proxy.translate(-directions[countFinal][0] * 50, -directions[countFinal][1] * 50);
                 }
-
                 @Override
-                public void mouseEntered(MouseEvent e) {
-                }
-
+                public void mouseEntered(MouseEvent e) {}
                 @Override
-                public void mouseExited(MouseEvent e) {
-                }
+                public void mouseExited(MouseEvent e) {}
             };
             count++;
             label.addMouseListener(ml);
         }
-        //set the layout to null
+        //Set the layout to null
         panel.setLayout(null);
         for(JLabel piece : pieces)
         {
@@ -375,127 +318,87 @@ public class CastleBoardGame2UI {
         {
             panel.add(highlighter);
         }
-        
-        //adds a new mouse listener that enables interactions with the board tiles when clicked
+        //Adds a new mouse listener that enables interactions with the board tiles when clicked
         MouseListener m1 = new MouseListener() {
             @Override
             protected Object clone() throws CloneNotSupportedException {
                 return super.clone();
             }
-
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-
-            }
-
+            public void mouseClicked(java.awt.event.MouseEvent evt) {}
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
-
                 JLabel label = (JLabel) e.getSource();
-
-                //label.setBackground(Color.red);
+                //Label.setBackground(Color.red);
                 System.out.println(label.getLocation());
-
                 HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/ClickSound.wav"));
-
-               // sound.HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/ClickSound.wav"));
-
-            }
-
+               //Sound.HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/ClickSound.wav"));
+            }           
             @Override
-            public void mouseReleased(java.awt.event.MouseEvent e) {
-
-            }
-
+            public void mouseReleased(java.awt.event.MouseEvent e) {}
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-
-            }
-
+            public void mouseEntered(java.awt.event.MouseEvent e) {}
             @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-
-            }
-
+            public void mouseExited(java.awt.event.MouseEvent e) {}
         };
-
-        //for loop which intialises the JLable array as well as setting their size color and location on the JPanel
+        //For loop which intialises the JLable array as well as setting their size color and location on the JPanel
         for (int i = 0; i < boardHeight; i++) {
-
             for (int j = 0; j < boardWidth; j++) {
                 stone[i] = new JLabel();
                 stone[i].setOpaque(true);
-
                 if (i >= 5 && i < 15) {
-
                     if ((j == 5) || (j == 15)) {
-
-                        //stone color
+                        //Stone color
                         stone[i].setIcon(stoneImage);
                     } else {
-
                         Integer diceInt = 0;
                         Random rand = new Random();
-
                         diceInt = rand.nextInt(10) + 1;
-
                         if (diceInt > 2) {
-                            //grass color
+                            //Grass color
                             stone[i].setIcon(grassImage);
                         } else {
-                            //dirt color
+                            //Dirt color
                             stone[i].setIcon(dirtImage);
                         }
-
                         if ((i >= 5 && i < 15) && j >= 6 && j < 15) {
-                            //caslte color
+                            //Castle color
                             stone[i].setIcon(InteriorImage);
-
                         }
-
-                        //sets the color of the walls
+                        //Sets the color of the walls
                         if (i == 5 && j < 15 && j >= 5) {
-                            //stone color
+                            //Stone color
                             stone[i].setIcon(stoneImage);
                         }
-
                         if (i == 14 && j < 15 && j >= 5) {
-                            //stone color
+                            //Stone color
                             stone[i].setIcon(stoneImage);
                         }
-                        //sets the color of the keep
+                        //Sets the color of the keep
                         if ((i == 9 || i == 10) && j == 10) {
-                            //stone color
+                            //Stone color
                             stone[i].setIcon(stoneImage);
                         }
-
                     }
-
                 } else {
                     Integer diceInt = 0;
                     Random rand = new Random();
-
                     diceInt = rand.nextInt(10) + 1;
-
                     if (diceInt > 2) {
-                        //grass color
+                        //Grass color
                         stone[i].setIcon(grassImage);
                     } else {
-
                         //dirt color
                         stone[i].setIcon(dirtImage);
                     }
-
                 }
-
                 stone[i].setLocation(j * 50, i * 50);
                 stone[i].setSize(new Dimension(50, 50));
+                //Border
 //                stone[i].setBorder(BorderFactory.createLineBorder(Color.black));
                 stone[i].addMouseListener(m1);
                 panel.add(stone[i]);
             }
-
         }
-
         //returns the panel
         return panel;
     }
@@ -510,19 +413,15 @@ public class CastleBoardGame2UI {
         }
     }
     public void HandleSound(InputStream file) {
-
         System.out.println("castleboardgame2ui.CastleBoardGame2UI.HandleSound()");
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
-
             Thread.sleep(100);
         } catch (Exception e) {
             System.out.println(e);
         }
-
     }
-
 }
