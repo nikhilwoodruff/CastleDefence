@@ -36,7 +36,13 @@ import javax.swing.JPanel;
  * @author 12lstephens
  */
 public class CastleBoardGame2UI {
-
+    
+    
+    //ANIMATION VALUES
+    int moveSpeed = 500; //Time in ms for piece to move
+    int highlighterSpeed = 500; //Time in ms for highlighters to come and go
+    int turn;
+    
      JFrame frame = new JFrame();
     
     public CastleBoardGame2UI(){        
@@ -44,6 +50,7 @@ public class CastleBoardGame2UI {
         
         //Creates a new Jframe
         //adds the panels to the frame and sets the size of the frame
+        
         frame.add(RefreshPanel2(null));
         frame.add(RefreshPanel1());
         frame.setSize(1250, 1025);
@@ -68,8 +75,6 @@ public class CastleBoardGame2UI {
         String diceNumber = "";
         Integer diceInt = 0;
         Random rand = new Random();
-        //HIIII
-        //TESTING ONE TWO THREE
         //generates a random interger from 1 to 6
         diceInt = rand.nextInt(6) + 1;
         System.out.println("Hello");
@@ -147,9 +152,11 @@ public class CastleBoardGame2UI {
         frame.repaint();
         frame.validate();
     }
-       
+       int moving = 0;
+       ArrayList<MovementAnimation> anim = new ArrayList<>();
+       ArrayList<MovementAnimation> toRemove = new ArrayList<>();
     public JPanel RefreshPanel1() {
-
+        MovementAnimation.enableAnimation(anim, toRemove);
         //creates a new Jpanel
         JPanel panel = new JPanel();
         //creates the variables needed 
@@ -158,9 +165,9 @@ public class CastleBoardGame2UI {
         JLabel[] stone = new JLabel[100];
         ArrayList<JLabel> pieces = new ArrayList<>();
         ArrayList<JLabel> highlighters = new ArrayList<>();
-        ArrayList<MovementAnimation> anim = new ArrayList<>();
+        
         int[][] directions = new int[][] {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
-        int moving = 0;
+        
         int boardWidth = 21;
         int boardHeight = 20;
         
@@ -204,14 +211,21 @@ public class CastleBoardGame2UI {
         Image dimgI = imgI.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon InteriorImage = new ImageIcon(dimgI);
         
-        //load counter image
+        //load counter images
         BufferedImage imgC = null;
         try {
-            imgC = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/red.jpg"));
+            imgC = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/red.png"));
         } catch (IOException e) {
         }
         Image dimgC = imgC.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon CounterImage = new ImageIcon(dimgC);
+        BufferedImage imgC2 = null;
+        try {
+            imgC2 = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/blue.png"));
+        } catch (IOException e) {
+        }
+        Image dimgC2 = imgC2.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        ImageIcon CounterImage2 = new ImageIcon(dimgC2);
         //load highlighter image
         BufferedImage imgH = null;
         try {
@@ -220,38 +234,56 @@ public class CastleBoardGame2UI {
         }
         Image dimgH = imgH.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon HighlightImage = new ImageIcon(dimgH);
-        pieces.add(new JLabel());
-        pieces.get(pieces.size() - 1).setVisible(true);
-        pieces.get(pieces.size() - 1).setIcon(CounterImage);
-        pieces.get(pieces.size() - 1).setLocation(50, 50);
-        pieces.get(pieces.size() - 1).setSize(50, 50);
         
-        highlighters.add(new JLabel());
-        highlighters.get(highlighters.size() - 1).setVisible(true);
-        highlighters.get(highlighters.size() - 1).setIcon(CounterImage);
-        highlighters.get(highlighters.size() - 1).setLocation(250, 250);
-        highlighters.get(highlighters.size() - 1).setSize(50, 50);
-        
+        BufferedImage imgDi = null;
+        try {
+            imgDi = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/DiceImage2.png"));
+        } catch (IOException e) {
+        }
+        Image dimgDi = imgDi.getScaledInstance(50, 920, Image.SCALE_SMOOTH);
+        ImageIcon DiceImage = new ImageIcon(imgDi);
+        //create pieces
+        for(int i = 0; i < 5; i++)
+        {
+            pieces.add(new JLabel());
+            pieces.get(pieces.size() - 1).setVisible(true);
+            pieces.get(pieces.size() - 1).setIcon(CounterImage);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i+1), 50);
+            pieces.get(pieces.size() - 1).setSize(50, 50);
+            pieces.add(new JLabel());
+            pieces.get(pieces.size() - 1).setVisible(true);
+            pieces.get(pieces.size() - 1).setIcon(CounterImage2);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i+11), 50);
+            pieces.get(pieces.size() - 1).setSize(50, 50);
+        }
+        //create highlighters
+        for(int j = 0; j < 8; j++)
+        {
+            highlighters.add(new JLabel());
+            highlighters.get(highlighters.size() - 1).setVisible(true);
+            highlighters.get(highlighters.size() - 1).setIcon(HighlightImage);
+            highlighters.get(highlighters.size() - 1).setLocation(50 * (j+1), 250);
+            highlighters.get(highlighters.size() - 1).setSize(50, 50);
+        }
+        //create dice
+        JLabel dice = new JLabel();
+        dice.setBackground(new Color(0, 0, 0, 0));
+        dice.setVisible(true);
+        dice.setIcon(DiceImage);
+        dice.setLocation(1000, 0);
+        dice.setSize(50, 920);
+        panel.add(dice);
         //give the pieces behaviour
         int count1 = 0;
         for(JLabel piece : pieces)
         {
-            
-            piece.setSize(50, 50);
-            BufferedImage img = null;
-            try {
-                img = ImageIO.read(new File("H:\\Downloads\\red.jpg"));
-            } catch (IOException e) {
-            }
-            Image dimg = img.getScaledInstance(piece.getWidth(), piece.getHeight(),Image.SCALE_SMOOTH);
-            ImageIcon imageIcon = new ImageIcon(dimg);
-            piece.setIcon(imageIcon);
             final int countFinal = count1;
             MouseListener ml = new MouseListener() {
                 @Override
                 protected Object clone() throws CloneNotSupportedException {
                     return super.clone();
                 }
+                @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt)
                 {
                     
@@ -263,8 +295,12 @@ public class CastleBoardGame2UI {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    //moving = countFinal;
-                    //setUpHighlighters(pieces, moving, highlighters, anim, directions);
+                    if(pieces.indexOf(piece) % 2 == 0)
+                    {
+                        
+                    }
+                    moving = countFinal;
+                    setUpHighlighters(pieces, moving, highlighters, anim, directions);
                 }
 
                 @Override
@@ -281,7 +317,8 @@ public class CastleBoardGame2UI {
         int count = 0;
         for(JLabel label : highlighters)
         {
-            label.setLocation(625, 1100);
+//            label.setLocation(625, 1100);
+            label.setLocation(250, 250);
             final int countFinal = count;
             MouseListener ml = new MouseListener() {
                 @Override
@@ -299,24 +336,22 @@ public class CastleBoardGame2UI {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     //When a direction pointer is clicked...
-                    /*if(rolled)
+                    if(dice.getLocation().y < 0)
                     {
-                        jLabel12.setLocation(520, 20);
+                        dice.setLocation(1000, 0);
                     }
                     int rand = (int) Math.floor(Math.random() * 6);
-                    MovementAnimation.newAnimation(anim, jLabel12, 0, -(rand * 51 + 615), 2000);
-                    rolled = true;*/
+                    MovementAnimation.newAnimation(anim, dice, 0, -(rand * 51 + 615), 2000);
                     JLabel target = pieces.get(moving);
                     for(JLabel label : highlighters)
                     {
                         //Pack away all pointers
-                        MovementAnimation.newAnimation(anim, label, 625 - label.getLocation().x, 1100 - label.getLocation().y, 750);
+                        MovementAnimation.newAnimation(anim, label, 625 - label.getLocation().x, 1100 - label.getLocation().y, highlighterSpeed);
                     }
                     //Move the piece
-                    MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, 1500);
+                    MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, moveSpeed);
                     Point proxy = target.getLocation();
                     proxy.translate(-directions[countFinal][0] * 50, -directions[countFinal][1] * 50);
-                    //System.out.println("Moving to " + (proxy.x / 50) + ", " + (proxy.y / 50));
                 }
 
                 @Override
@@ -330,12 +365,18 @@ public class CastleBoardGame2UI {
             count++;
             label.addMouseListener(ml);
         }
-        
         //set the layout to null
         panel.setLayout(null);
-        panel.add(pieces.get(pieces.size() - 1));
-        panel.add(highlighters.get(highlighters.size() - 1));
-        //adds a new mouse lisnter that enables interactions with the board tiles when clicked
+        for(JLabel piece : pieces)
+        {
+            panel.add(piece);
+        }
+        for(JLabel highlighter : highlighters)
+        {
+            panel.add(highlighter);
+        }
+        
+        //adds a new mouse listener that enables interactions with the board tiles when clicked
         MouseListener m1 = new MouseListener() {
             @Override
             protected Object clone() throws CloneNotSupportedException {
@@ -464,7 +505,7 @@ public class CastleBoardGame2UI {
         int count = 0;
         for(JLabel pointer : highlighters)
         {
-            MovementAnimation.newAnimation(anim, pointer, target.getLocation().x - pointer.getLocation().x - (directions[count][0] * 50), target.getLocation().y - 30 - pointer.getLocation().y - (directions[count][1] * 50), 900);
+            MovementAnimation.newAnimation(anim, pointer, target.getLocation().x - pointer.getLocation().x - (directions[count][0] * 50), target.getLocation().y - 30 - pointer.getLocation().y - (directions[count][1] * 50) + 30, highlighterSpeed);
             count++;
         }
     }
