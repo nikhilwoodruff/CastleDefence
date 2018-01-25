@@ -66,7 +66,7 @@ public class MovementAnimation
                         }
                         percentile = (float) (currentTime - animation.startTime) / animation.duration;
                         percentile = cubicInOut(percentile);
-                        if(percentile > 0.99)
+                        if(percentile > 0.999)
                         {
                             percentile = 1;
                             toRemove.add(animation);
