@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -122,7 +123,7 @@ public class CastleBoardGame2UI {
                 //Sound.HandleSound(new File("DiceSound.wav"));
             }
         });
-        //Returns the value of the Panel
+        //Returns the value of the JPanel
         return panel2;
     }
      void RefreshFrame() {
@@ -140,69 +141,20 @@ public class CastleBoardGame2UI {
         int boardWidth = 21;
         int boardHeight = 20;
         //Loads dirt image
-        BufferedImage imgD = null;    
-        try {
-            imgD = ImageIO.read((CastleBoardGame2UI.class.getResourceAsStream("/Resorces/DirtTexture.jpg")));
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        Image dimgD = imgD.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        ImageIcon dirtImage = new ImageIcon(dimgD);
+        ImageIcon dirtImage = readImage("DirtTexture.jpg", 50, 50);
         //Loads stone image
-        BufferedImage imgG = null;
-        try {
-            imgG = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/GrassTexture.jpg"));
-        } catch (IOException e) {
-        }
-        Image dimgG = imgG.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        ImageIcon grassImage = new ImageIcon(dimgG);
+        ImageIcon grassImage = readImage("GrassTexture.jpg", 50, 50);
         //Loads stone image
-        BufferedImage imgS = null;
-        try {
-            imgS = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/StoneTexture.jpg"));
-        } catch (IOException e) {
-        }
-        Image dimgS = imgS.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        ImageIcon stoneImage = new ImageIcon(dimgS);
+        ImageIcon stoneImage = readImage("StoneTexture.jpg", 50, 50);
         //Loads castle interior iamge
-        BufferedImage imgI = null;
-        try {
-            imgI = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/InternalTexture.jpg"));
-        } catch (IOException e) {
-        }
-        Image dimgI = imgI.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        ImageIcon InteriorImage = new ImageIcon(dimgI);
+        ImageIcon InteriorImage = readImage("InternalTexture.jpg", 50, 50);
         //Loads counter images
-        BufferedImage imgC = null;
-        try {
-            imgC = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/red.png"));
-        } catch (IOException e) {
-        }
-        Image dimgC = imgC.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        ImageIcon CounterImage = new ImageIcon(dimgC);
-        BufferedImage imgC2 = null;
-        try {
-            imgC2 = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/blue.png"));
-        } catch (IOException e) {
-        }
-        Image dimgC2 = imgC2.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        ImageIcon CounterImage2 = new ImageIcon(dimgC2);
+        ImageIcon CounterImage = readImage("red.png", 50, 50);
+        ImageIcon CounterImage2 = readImage("blue.png", 50, 50);
         //Loads highlighter image
-        BufferedImage imgH = null;
-        try {
-            imgH = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/highlight.png"));
-        } catch (IOException e) {
-        }
-        Image dimgH = imgH.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        ImageIcon HighlightImage = new ImageIcon(dimgH);
+        ImageIcon HighlightImage = readImage("highlight.png", 50, 50);
         //Loads dice image
-        BufferedImage imgDi = null;
-        try {
-            imgDi = ImageIO.read(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/DiceImage2.png"));
-        } catch (IOException e) {
-        }
-        Image dimgDi = imgDi.getScaledInstance(50, 920, Image.SCALE_SMOOTH);
-        ImageIcon DiceImage = new ImageIcon(dimgDi);
+        ImageIcon DiceImage = readImage("DiceImage2.png", 50, 920);
         //Create pieces
         for(int i = 0; i < 5; i++)
         {
@@ -394,7 +346,7 @@ public class CastleBoardGame2UI {
                 stone[i].setLocation(j * 50, i * 50);
                 stone[i].setSize(new Dimension(50, 50));
                 //Border
-//                stone[i].setBorder(BorderFactory.createLineBorder(Color.black));
+                stone[i].setBorder(BorderFactory.createLineBorder(Color.black));
                 stone[i].addMouseListener(m1);
                 panel.add(stone[i]);
             }
@@ -423,5 +375,17 @@ public class CastleBoardGame2UI {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+    public ImageIcon readImage(String fileName, int height, int width)
+    {
+        //File must be in /Resorces/!
+        BufferedImage image = null;    
+        try {
+            image = ImageIO.read((CastleBoardGame2UI.class.getResourceAsStream("/Resorces/" + fileName)));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        Image sImage = image.getScaledInstance(height, width, Image.SCALE_SMOOTH);
+        return new ImageIcon(sImage);
     }
 }
