@@ -40,14 +40,6 @@ public class CastleBoardGame2UI {
       
         
           //Creates a new Jframe
-       //HELLO from Nikhil
-        //HI
-        //TESTING+
-        //Hello
-        //Testing
-        //Hi
-        //Nikhil
-        //jeghsklf
 
         //adds the panels to the frame and sets the size of the frame
         frame.add(RefreshPanel2(null));
