@@ -5,7 +5,7 @@
  */
 package castleboardgame2ui;
 
-import castleboardgame2ui.Resorces.DiceThread;
+import castleboardgame2ui.DiceThread;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -50,10 +50,7 @@ public class CastleBoardGame2UI {
     ArrayList<JLabel> pieces = new ArrayList<>();
     ArrayList<JLabel> highlighters = new ArrayList<>();
     int[][] directions = new int[][] {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
-    
-        String[][] grid = new String[20][19];
-        
-
+    Terrain[][] grid = new Terrain[20][19];
     
     public CastleBoardGame2UI(){     
         //Creates a new JFrame
@@ -69,16 +66,7 @@ public class CastleBoardGame2UI {
         //RefreshFrame();
         //nested for loops assign the selected values of the
         //array the different terrain types available
-        for(int i = 0; i < 20; i++){
-            for(int j = 0; j < 19; j++){
-                    grid[i][j] = "grass";
-            }
-        }
-        for (int i = 5; i < 15; i++){
-            for(int j = 5; j < 15; j++){
-                grid[i][j] = "stone";
-            }
-        }
+        
     }
     /**
      * @param args the command line arguments
@@ -101,6 +89,16 @@ public class CastleBoardGame2UI {
         return diceNumber;
     }
     public JPanel RefreshPanel2(String overide) {
+        for(int i = 0; i < 20; i++){
+            for(int j = 0; j < 19; j++){
+                grid[i][j] = new Terrain(Terrain.grass);
+            }
+        }
+        for (int i = 5; i < 15; i++){
+            for(int j = 5; j < 15; j++){
+                grid[i][j] = new Terrain(Terrain.stone);
+            }
+        }
         //Creates a new JPanel 
         JPanel panel2 = new JPanel();
         panel2.setLayout(null);
@@ -166,7 +164,7 @@ public class CastleBoardGame2UI {
                 //DiceThread dt = new DiceThread(diceLabel);
                 //Thread t = new Thread(dt);
                 //t.start();                          
-                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/DiceSound.wav"));
+                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/DiceSound.wav"));
                 if(dice.getLocation().y < 0)
                     {
                         dice.setLocation(100, 100);
@@ -222,15 +220,15 @@ public class CastleBoardGame2UI {
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
             pieces.get(pieces.size() - 1).setIcon(CounterImage);
-            pieces.get(pieces.size() - 1).setLocation(50 * (i+1), 50);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i+1), 0);
             pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i+1][1] = "player0";
+            grid[i+1][0].teamOccupying = 0;
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
             pieces.get(pieces.size() - 1).setIcon(CounterImage2);
-            pieces.get(pieces.size() - 1).setLocation(50 * (i+11), 50);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i+11), 0);
             pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i+11][1] = "player1";
+            grid[i+11][0].teamOccupying = 1;
         }
         //Give the pieces behaviour (this is a long one)
         int count1 = 0;
@@ -289,21 +287,42 @@ public class CastleBoardGame2UI {
                     //When a direction pointer is clicked...
                     int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
                         JLabel target = pieces.get(moving);
+                        int x = (int) Math.floor(target.getLocation().x / 51);
+                        int y = (int) Math.floor(target.getLocation().y / 51);
+                        
+                        int newX = x - directions[countFinal][0];
+                        int newY = y - directions[countFinal][1];
                         for(JLabel label : highlighters)
                         {
                             //Pack away all pointers
                             MovementAnimation.newAnimation(anim, label, 625 - label.getLocation().x, 1100 - label.getLocation().y, highlighterSpeed);
                         }
-                        //Move the piece
-                        MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 51, -directions[countFinal][1] * 51, moveSpeed);
-
-                        Point proxy = target.getLocation();
-                        proxy.translate(-directions[countFinal][0] * 50, -directions[countFinal][1] * 50);
-                        numberOfMoves[team]--;
-                        if(numberOfMoves[team] < 1)
+                        boolean okToMove = true;
+//                        System.out.println(team);
+//                        System.out.println(grid[newX][newY].teamOccupying);
+                        if(grid[newX][newY].teamOccupying == 1 - team)
                         {
-                            numberOfMoves[team] = 5;
-                            currentTeam = 1 - currentTeam;
+                            System.out.println("Collision with enemy!");
+//                            System.out.println(team);
+//                            System.out.println(grid[newX][newY].teamOccupying);
+                        }
+                        else if(grid[newX][newY].teamOccupying == team)
+                        {
+                            System.out.println("Collision with team!");
+                            okToMove = false;
+                        }
+                        //Move the piece
+                        if(okToMove)
+                        {
+                            grid[x][y].teamOccupying = -1;
+                            grid[newX][newY].teamOccupying = team;
+                            MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 51, -directions[countFinal][1] * 51, moveSpeed);
+                            numberOfMoves[team]--;
+                            if(numberOfMoves[team] < 1)
+                            {
+                                numberOfMoves[team] = 5;
+                                currentTeam = 1 - currentTeam;
+                            }
                         }
                 }
                 @Override
@@ -337,8 +356,8 @@ public class CastleBoardGame2UI {
                 JLabel label = (JLabel) e.getSource();
                 //Label.setBackground(Color.red);
                 //System.out.println(label.getLocation());
-                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/ClickSound.wav"));
-               //Sound.HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/ClickSound.wav"));
+                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/ClickSound.wav"));
+               //Sound.HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/ClickSound.wav"));
             }           
             @Override
             public void mouseReleased(java.awt.event.MouseEvent e) {}
@@ -433,10 +452,10 @@ public class CastleBoardGame2UI {
     }
     public ImageIcon readImage(String fileName, int height, int width)
     {
-        //File must be in /Resorces/!
+        //File must be in /Resources/!
         BufferedImage image = null;    
         try {
-            image = ImageIO.read((CastleBoardGame2UI.class.getResourceAsStream("/Resorces/" + fileName)));
+            image = ImageIO.read((CastleBoardGame2UI.class.getResourceAsStream("/Resources/" + fileName)));
         } catch (Exception e) {
             System.out.println(e);
         }
