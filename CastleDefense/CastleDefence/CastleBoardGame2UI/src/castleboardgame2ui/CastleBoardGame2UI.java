@@ -51,6 +51,10 @@ public class CastleBoardGame2UI {
     ArrayList<JLabel> highlighters = new ArrayList<>();
     int[][] directions = new int[][] {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
     
+        String[][] grid = new String[20][19];
+        
+
+    
     public CastleBoardGame2UI(){     
         //Creates a new JFrame
         //Adds the panels to the frame and sets the size of the frame
@@ -63,6 +67,18 @@ public class CastleBoardGame2UI {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         //RefreshFrame();
+        //nested for loops assign the selected values of the
+        //array the different terrain types available
+        for(int i = 0; i < 20; i++){
+            for(int j = 0; j < 19; j++){
+                    grid[i][j] = "grass";
+            }
+        }
+        for (int i = 5; i < 15; i++){
+            for(int j = 5; j < 15; j++){
+                grid[i][j] = "stone";
+            }
+        }
     }
     /**
      * @param args the command line arguments
@@ -208,11 +224,13 @@ public class CastleBoardGame2UI {
             pieces.get(pieces.size() - 1).setIcon(CounterImage);
             pieces.get(pieces.size() - 1).setLocation(50 * (i+1), 50);
             pieces.get(pieces.size() - 1).setSize(50, 50);
+            grid[i+1][1] = "player0";
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
             pieces.get(pieces.size() - 1).setIcon(CounterImage2);
             pieces.get(pieces.size() - 1).setLocation(50 * (i+11), 50);
             pieces.get(pieces.size() - 1).setSize(50, 50);
+            grid[i+11][1] = "player1";
         }
         //Give the pieces behaviour (this is a long one)
         int count1 = 0;
