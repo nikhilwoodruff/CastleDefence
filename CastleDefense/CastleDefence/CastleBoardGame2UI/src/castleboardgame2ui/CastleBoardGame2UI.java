@@ -42,6 +42,8 @@ public class CastleBoardGame2UI {
     int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
     int moving = 0;
+    int currentTeam = 0;
+    int[] numberOfMoves = {5, 5};
     ArrayList<MovementAnimation> anim = new ArrayList<>();
     ArrayList<MovementAnimation> toRemove = new ArrayList<>();
     JFrame frame = new JFrame();
@@ -189,7 +191,15 @@ public class CastleBoardGame2UI {
         ImageIcon CounterImage2 = readImage("blue.png", 50, 50);
         //Loads highlighter image
         ImageIcon HighlightImage = readImage("highlight.png", 50, 50);
-        
+        //Create highlighters
+        for(int j = 0; j < 8; j++)
+        {
+            highlighters.add(new JLabel());
+            highlighters.get(highlighters.size() - 1).setVisible(true);
+            highlighters.get(highlighters.size() - 1).setIcon(HighlightImage);
+            highlighters.get(highlighters.size() - 1).setLocation(50 * (j+1), 250);
+            highlighters.get(highlighters.size() - 1).setSize(50, 50);
+        }
         //Create pieces
         for(int i = 0; i < 5; i++)
         {
@@ -204,17 +214,6 @@ public class CastleBoardGame2UI {
             pieces.get(pieces.size() - 1).setLocation(50 * (i+11), 50);
             pieces.get(pieces.size() - 1).setSize(50, 50);
         }
-        //Create highlighters
-        for(int j = 0; j < 8; j++)
-        {
-            highlighters.add(new JLabel());
-            highlighters.get(highlighters.size() - 1).setVisible(true);
-            highlighters.get(highlighters.size() - 1).setIcon(HighlightImage);
-            highlighters.get(highlighters.size() - 1).setLocation(50 * (j+1), 250);
-            highlighters.get(highlighters.size() - 1).setSize(50, 50);
-        }
-        //Create dice
-        
         //Give the pieces behaviour (this is a long one)
         int count1 = 0;
         for(JLabel piece : pieces)
@@ -231,12 +230,18 @@ public class CastleBoardGame2UI {
                 public void mousePressed(MouseEvent e) {}
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    if(pieces.indexOf(piece) % 2 == 0)
-                    {
-                        
-                    }
                     moving = countFinal;
-                    setUpHighlighters(pieces, moving, highlighters, anim, directions);
+                    int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
+                    if(team == currentTeam)
+                    {
+                        setUpHighlighters(pieces, moving, highlighters, anim, directions);
+                    }
+                    else
+                    {
+                        System.out.println(team);
+                        System.out.println(currentTeam);
+                        System.out.println("Not your piece!");
+                    }
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {}
@@ -264,17 +269,24 @@ public class CastleBoardGame2UI {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     //When a direction pointer is clicked...
-                    
-                    JLabel target = pieces.get(moving);
-                    for(JLabel label : highlighters)
-                    {
-                        //Pack away all pointers
-                        MovementAnimation.newAnimation(anim, label, 625 - label.getLocation().x, 1100 - label.getLocation().y, highlighterSpeed);
-                    }
-                    //Move the piece
-                    MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 51, -directions[countFinal][1] * 51, moveSpeed);
-                    Point proxy = target.getLocation();
-                    proxy.translate(-directions[countFinal][0] * 50, -directions[countFinal][1] * 50);
+                    int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
+                        JLabel target = pieces.get(moving);
+                        for(JLabel label : highlighters)
+                        {
+                            //Pack away all pointers
+                            MovementAnimation.newAnimation(anim, label, 625 - label.getLocation().x, 1100 - label.getLocation().y, highlighterSpeed);
+                        }
+                        //Move the piece
+                        MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 51, -directions[countFinal][1] * 51, moveSpeed);
+
+                        Point proxy = target.getLocation();
+                        proxy.translate(-directions[countFinal][0] * 50, -directions[countFinal][1] * 50);
+                        numberOfMoves[team]--;
+                        if(numberOfMoves[team] < 1)
+                        {
+                            numberOfMoves[team] = 5;
+                            currentTeam = 1 - currentTeam;
+                        }
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {}
@@ -286,13 +298,13 @@ public class CastleBoardGame2UI {
         }
         //Set the layout to null
         panel.setLayout(null);
-        for(JLabel piece : pieces)
-        {
-            panel.add(piece);
-        }
         for(JLabel highlighter : highlighters)
         {
             panel.add(highlighter);
+        }
+        for(JLabel piece : pieces)
+        {
+            panel.add(piece);
         }
         //Adds a new mouse listener that enables interactions with the board tiles when clicked
         MouseListener m1 = new MouseListener() {
