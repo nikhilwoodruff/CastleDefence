@@ -85,11 +85,28 @@ public class CastleBoardGame2UI {
     public JPanel RefreshPanel2(String overide) {
         //Creates a new JPanel 
         JPanel panel2 = new JPanel();
+        panel2.setLayout(null);
         //Creates and initialises the needed JLabels
-        JLabel text = new JLabel("Status");
+        //JLabel text = new JLabel("Status");
+        //text.setLocation(25, 25);
+        //text.setSize(50, 50);
         Button Dice = new Button("Roll the dice");
-        JLabel diceLabel = new JLabel("0");
-        JLabel CombatStrenght = new JLabel("PLACEHOLDER");
+        Dice.setLocation(50, 25);
+        Dice.setSize(150, 50);
+        JLabel concealer1 = new JLabel("test");
+        concealer1.setSize(50, 869);
+        concealer1.setLocation(100, 151);
+        concealer1.setIcon(readImage("grey.png", 50, 869));
+        JLabel concealer2 = new JLabel("test");
+        concealer2.setSize(50, 100);
+        concealer2.setLocation(100, 0);
+        concealer2.setIcon(readImage("grey.png", 50, 100));
+        //JLabel diceLabel = new JLabel("0");
+        //diceLabel.setLocation(75, 25);
+        //diceLabel.setSize(50, 50);
+        //JLabel CombatStrength = new JLabel("PLACEHOLDER");
+        //CombatStrength.setLocation(100, 25);
+        //CombatStrength.setSize(50, 50);
 //        BufferedImage imgL = null;
 //        try {
 //            imgL = ImageIO.read(new File("H:\\Downloads\\Computing\\images (2).jpg"));
@@ -99,27 +116,46 @@ public class CastleBoardGame2UI {
 //        ImageIcon leatherImage = new ImageIcon(dimgL);
         //Sets up the settings of the Panel
         panel2.setSize(new Dimension(200, 1000));
-        panel2.setBackground(Color.lightGray);
+        panel2.setBackground(new Color(195, 195, 195));
         panel2.setLocation(1050, 0);
         //Sets the sizes of the JLabels
         Dice.setMaximumSize(new Dimension(200, 50));
         Dice.setMinimumSize(new Dimension(200, 50));
         //Adds the JLables to the Panel
-        panel2.add(text);
+        //panel2.add(text);
         panel2.add(Dice);
-        panel2.add(diceLabel);
-        panel2.add(CombatStrenght);
+//        panel2.add(diceLabel);
+//        panel2.add(CombatStrength);
+        //Loads dice image
+        ImageIcon DiceImage = readImage("DiceImage2.png", 50, 920);
+        JLabel dice = new JLabel();
+        dice.setBackground(new Color(0, 0, 0, 0));
+        dice.setVisible(true);
+        dice.setIcon(DiceImage);
+        dice.setLocation(100, 100);
+        dice.setSize(50, 920);
+        panel2.add(concealer2);
+        panel2.add(concealer1);
+        panel2.add(dice);
         //Sets the Panel layout to BoxLayout
-        panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
+        
+        //panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
         //Adds a new action listener that cretates a new thread when the button is pressed to activate the mouse throwing animation
         Dice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Button btn = (Button) ae.getSource();
-                DiceThread dt = new DiceThread(diceLabel);
-                Thread t = new Thread(dt);
-                t.start();                          
+                //DiceThread dt = new DiceThread(diceLabel);
+                //Thread t = new Thread(dt);
+                //t.start();                          
                 HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/DiceSound.wav"));
+                if(dice.getLocation().y < 0)
+                    {
+                        dice.setLocation(100, 100);
+                    }
+                    int rand = (int) Math.floor(Math.random() * 6);
+                    MovementAnimation.newAnimation(anim, dice, 0, -(rand * 51 + 615), 2000);
+                    System.out.println(rand + 1);
                 //Sound.HandleSound(new File("DiceSound.wav"));
             }
         });
@@ -153,8 +189,7 @@ public class CastleBoardGame2UI {
         ImageIcon CounterImage2 = readImage("blue.png", 50, 50);
         //Loads highlighter image
         ImageIcon HighlightImage = readImage("highlight.png", 50, 50);
-        //Loads dice image
-        ImageIcon DiceImage = readImage("DiceImage2.png", 50, 920);
+        
         //Create pieces
         for(int i = 0; i < 5; i++)
         {
@@ -179,13 +214,7 @@ public class CastleBoardGame2UI {
             highlighters.get(highlighters.size() - 1).setSize(50, 50);
         }
         //Create dice
-        JLabel dice = new JLabel();
-        dice.setBackground(new Color(0, 0, 0, 0));
-        dice.setVisible(true);
-        dice.setIcon(DiceImage);
-        dice.setLocation(1000, 0);
-        dice.setSize(50, 920);
-        panel.add(dice);
+        
         //Give the pieces behaviour (this is a long one)
         int count1 = 0;
         for(JLabel piece : pieces)
@@ -235,12 +264,7 @@ public class CastleBoardGame2UI {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     //When a direction pointer is clicked...
-                    if(dice.getLocation().y < 0)
-                    {
-                        dice.setLocation(1000, 0);
-                    }
-                    int rand = (int) Math.floor(Math.random() * 6);
-                    MovementAnimation.newAnimation(anim, dice, 0, -(rand * 51 + 615), 2000);
+                    
                     JLabel target = pieces.get(moving);
                     for(JLabel label : highlighters)
                     {
@@ -248,7 +272,7 @@ public class CastleBoardGame2UI {
                         MovementAnimation.newAnimation(anim, label, 625 - label.getLocation().x, 1100 - label.getLocation().y, highlighterSpeed);
                     }
                     //Move the piece
-                    MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, moveSpeed);
+                    MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 51, -directions[countFinal][1] * 51, moveSpeed);
                     Point proxy = target.getLocation();
                     proxy.translate(-directions[countFinal][0] * 50, -directions[countFinal][1] * 50);
                 }
@@ -276,12 +300,13 @@ public class CastleBoardGame2UI {
             protected Object clone() throws CloneNotSupportedException {
                 return super.clone();
             }
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {}
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
                 JLabel label = (JLabel) e.getSource();
                 //Label.setBackground(Color.red);
-                System.out.println(label.getLocation());
+                //System.out.println(label.getLocation());
                 HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/ClickSound.wav"));
                //Sound.HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resorces/ClickSound.wav"));
             }           
@@ -365,7 +390,7 @@ public class CastleBoardGame2UI {
         }
     }
     public void HandleSound(InputStream file) {
-        System.out.println("castleboardgame2ui.CastleBoardGame2UI.HandleSound()");
+        //System.out.println("castleboardgame2ui.CastleBoardGame2UI.HandleSound()");
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
             Clip clip = AudioSystem.getClip();
