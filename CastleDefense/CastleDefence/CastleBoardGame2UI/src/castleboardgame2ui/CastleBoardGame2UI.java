@@ -41,6 +41,8 @@ public class CastleBoardGame2UI {
     //ANIMATION VALUES
     int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
+    
+    int diceRoll = 1;
     int moving = 0;
     int currentTeam = 0;
     int[] numberOfMoves = {5, 5};
@@ -143,13 +145,13 @@ public class CastleBoardGame2UI {
 //        panel2.add(diceLabel);
 //        panel2.add(CombatStrength);
         //Loads dice image
-        ImageIcon DiceImage = readImage("DiceImage2.png", 50, 920);
+        ImageIcon DiceImage = readImage("DiceImage2.png", 50, 1227);
         JLabel dice = new JLabel();
         dice.setBackground(new Color(0, 0, 0, 0));
         dice.setVisible(true);
         dice.setIcon(DiceImage);
         dice.setLocation(100, 100);
-        dice.setSize(50, 920);
+        dice.setSize(50, 1227);
         panel2.add(concealer2);
         panel2.add(concealer1);
         panel2.add(dice);
@@ -160,23 +162,26 @@ public class CastleBoardGame2UI {
         Dice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Button btn = (Button) ae.getSource();
+                //Button btn = (Button) ae.getSource();
                 //DiceThread dt = new DiceThread(diceLabel);
                 //Thread t = new Thread(dt);
                 //t.start();                          
                 HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/DiceSound.wav"));
-                if(dice.getLocation().y < 0)
-                    {
-                        dice.setLocation(100, 100);
-                    }
+                    dice.setLocation(100, 153 - diceRoll * 51);
                     int rand = (int) Math.floor(Math.random() * 6);
-                    MovementAnimation.newAnimation(anim, dice, 0, -(rand * 51 + 615), 2000);
-                    System.out.println(rand + 1);
+                    MovementAnimation.newAnimation(anim, dice, 0, -((6 - diceRoll) * 51 + 612 + rand * 51 + 51), 2000);
+                    diceRoll = rand + 1;
+                    updateDiceRoll(rand + 1);
+                    System.out.println(diceRoll);
                 //Sound.HandleSound(new File("DiceSound.wav"));
             }
         });
         //Returns the value of the JPanel
         return panel2;
+    }
+    void updateDiceRoll(int newNumber)
+    {
+        diceRoll = newNumber;
     }
      void RefreshFrame() {
         frame.repaint();
@@ -220,15 +225,15 @@ public class CastleBoardGame2UI {
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
             pieces.get(pieces.size() - 1).setIcon(CounterImage);
-            pieces.get(pieces.size() - 1).setLocation(50 * (i+1), 0);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i), 0);
             pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i+1][0].teamOccupying = 0;
+            grid[i][0].teamOccupying = 0;
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
             pieces.get(pieces.size() - 1).setIcon(CounterImage2);
-            pieces.get(pieces.size() - 1).setLocation(50 * (i+11), 0);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i+10), 0);
             pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i+11][0].teamOccupying = 1;
+            grid[i+10][0].teamOccupying = 1;
         }
         //Give the pieces behaviour (this is a long one)
         int count1 = 0;
@@ -287,8 +292,8 @@ public class CastleBoardGame2UI {
                     //When a direction pointer is clicked...
                     int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
                         JLabel target = pieces.get(moving);
-                        int x = (int) Math.floor(target.getLocation().x / 51);
-                        int y = (int) Math.floor(target.getLocation().y / 51);
+                        int x = (int) Math.round(target.getLocation().x / 50);
+                        int y = (int) Math.round(target.getLocation().y / 50);
                         
                         int newX = x - directions[countFinal][0];
                         int newY = y - directions[countFinal][1];
@@ -298,11 +303,12 @@ public class CastleBoardGame2UI {
                             MovementAnimation.newAnimation(anim, label, 625 - label.getLocation().x, 1100 - label.getLocation().y, highlighterSpeed);
                         }
                         boolean okToMove = true;
-//                        System.out.println(team);
-//                        System.out.println(grid[newX][newY].teamOccupying);
+                        System.out.println("Moving from " + target.getLocation().x + ", " + target.getLocation().y + ": " + team);
+                        System.out.println("To " + newX * 50 + ", " + newY * 50 + ": " + grid[newX][newY].teamOccupying);
                         if(grid[newX][newY].teamOccupying == 1 - team)
                         {
                             System.out.println("Collision with enemy!");
+                            okToMove = false;
 //                            System.out.println(team);
 //                            System.out.println(grid[newX][newY].teamOccupying);
                         }
@@ -316,7 +322,8 @@ public class CastleBoardGame2UI {
                         {
                             grid[x][y].teamOccupying = -1;
                             grid[newX][newY].teamOccupying = team;
-                            MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 51, -directions[countFinal][1] * 51, moveSpeed);
+                            //MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, moveSpeed);
+                            MovementAnimation.newAnimation(anim, target, 50 * (newX - x), 50 * (newY - y), moveSpeed);
                             numberOfMoves[team]--;
                             if(numberOfMoves[team] < 1)
                             {

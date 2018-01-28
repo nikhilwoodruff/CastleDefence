@@ -65,17 +65,18 @@ public class MovementAnimation
                             percentile = 0;
                         }
                         percentile = (float) (currentTime - animation.startTime) / animation.duration;
-                        percentile = cubicInOut(percentile);
-                        if(percentile > 0.999)
+                        if(percentile >= 0.97)
                         {
                             percentile = 1;
                             toRemove.add(animation);
                         }
+                        percentile = cubicInOut(percentile);
                         animation.image.setLocation(new Point(getPercentile(percentile * 100, animation.startPos.x, animation.targetPos.x), getPercentile(percentile * 100, animation.startPos.y, animation.targetPos.y)));
                     }
                     else
                     {
                         percentile = 1;
+                        animation.image.setLocation(new Point(getPercentile(percentile * 100, animation.startPos.x, animation.targetPos.x), getPercentile(percentile * 100, animation.startPos.y, animation.targetPos.y)));
                         toRemove.add(animation);
                     }
                 }
@@ -85,22 +86,27 @@ public class MovementAnimation
     
     static void newAnimation(ArrayList<MovementAnimation> animList, JLabel image, int dx, int dy, int duration)
     {
-        if(!MovementAnimation.queued(animList, image))
+        int resultOfQuery = MovementAnimation.queued(animList, image);
+        if(resultOfQuery == -1)
         {
             animList.add(new MovementAnimation(image, duration, dx, dy));
         }
+        else
+        {
+            System.out.println("Already an animation queued for that object");
+        }
     }
     
-    private static boolean queued(ArrayList<MovementAnimation> list, JLabel image)
+    private static int queued(ArrayList<MovementAnimation> list, JLabel image)
     {
         for(MovementAnimation anim : list)
         {
             if(anim.image == image)
             {
-                return true;
+                return list.indexOf(anim);
             }
         }
-        return false;
+        return -1;
     }
     
     private static int differenceBetween(int number1, int number2)
