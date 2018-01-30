@@ -289,6 +289,8 @@ public class CastleBoardGame2UI {
                 public void mousePressed(MouseEvent e) {}
                 @Override
                 public void mouseReleased(MouseEvent e) {
+                    int index = highlighters.indexOf(label);
+                    if(pieces.get(moving).getLocation().x - label.getLocation().x == directions[index][0] * 50)
                     //When a direction pointer is clicked...
                     int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
                         JLabel target = pieces.get(moving);
@@ -308,6 +310,15 @@ public class CastleBoardGame2UI {
                         if(grid[newX][newY].teamOccupying == 1 - team)
                         {
                             System.out.println("Collision with enemy!");
+                            int rand = (int) Math.floor(Math.random() * 100);
+                            if(rand < 50 - grid[newX][newY].defensiveBonus)
+                            {
+                                int cX = findCounterByLocation(newX, newY, pieces).getLocation().x;
+                                int cY = findCounterByLocation(newX, newY, pieces).getLocation().y;
+                                int cTargetX = (1 - grid[newX][newY].teamOccupying) * 11 * 50;
+                                int cTargetY = (1 - grid[newX][newY].teamOccupying) * 50 * 50;
+                                MovementAnimation.newAnimation(anim, findCounterByLocation(newX, newY, pieces), cTargetX-cX, cTargetY-cY, 3000);
+                            }
                             okToMove = false;
 //                            System.out.println(team);
 //                            System.out.println(grid[newX][newY].teamOccupying);
@@ -434,6 +445,17 @@ public class CastleBoardGame2UI {
         }
         //returns the panel
         return panel;
+    }
+    JLabel findCounterByLocation(int x, int y, ArrayList<JLabel> list)
+    {
+        for(JLabel label : list)
+        {
+            if(Math.abs(label.getLocation().x / 50 - x) < 5 && Math.abs(label.getLocation().y / 50 - y) < 5)
+            {
+                return label;
+            }
+        }
+        return null;
     }
     public void setUpHighlighters(ArrayList<JLabel> pieces, int moving, ArrayList<JLabel> highlighters, ArrayList<MovementAnimation> anim, int[][] directions)
     {
