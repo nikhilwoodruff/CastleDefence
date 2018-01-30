@@ -291,7 +291,8 @@ public class CastleBoardGame2UI {
                 public void mouseReleased(MouseEvent e) {
                     int index = highlighters.indexOf(label);
                     if(pieces.get(moving).getLocation().x - label.getLocation().x == directions[index][0] * 50)
-                    //When a direction pointer is clicked...
+                    {
+                        //When a direction pointer is clicked...
                     int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
                         JLabel target = pieces.get(moving);
                         int x = (int) Math.round(target.getLocation().x / 50);
@@ -305,8 +306,8 @@ public class CastleBoardGame2UI {
                             MovementAnimation.newAnimation(anim, label, 625 - label.getLocation().x, 1100 - label.getLocation().y, highlighterSpeed);
                         }
                         boolean okToMove = true;
-                        System.out.println("Moving from " + target.getLocation().x + ", " + target.getLocation().y + ": " + team);
-                        System.out.println("To " + newX * 50 + ", " + newY * 50 + ": " + grid[newX][newY].teamOccupying);
+//                        System.out.println("Moving from " + target.getLocation().x + ", " + target.getLocation().y + ": " + team);
+//                        System.out.println("To " + newX * 50 + ", " + newY * 50 + ": " + grid[newX][newY].teamOccupying);
                         if(grid[newX][newY].teamOccupying == 1 - team)
                         {
                             System.out.println("Collision with enemy!");
@@ -342,6 +343,7 @@ public class CastleBoardGame2UI {
                                 currentTeam = 1 - currentTeam;
                             }
                         }
+                    }
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {}
