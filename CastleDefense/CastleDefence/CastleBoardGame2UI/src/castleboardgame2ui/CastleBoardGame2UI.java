@@ -521,7 +521,7 @@ public class CastleBoardGame2UI {
         }
         blueScore += deltaScore;
         scoreIndicator.setText("Blue score: " + blueScore);
-        if(blueScore > 2000)
+        if(blueScore > 1000000)
         {
             System.out.println("VICTORY FOR BLUES!");
             victoryMessage.setIcon(readImage("VictoryGraphicBlue.png", 750, 250));
