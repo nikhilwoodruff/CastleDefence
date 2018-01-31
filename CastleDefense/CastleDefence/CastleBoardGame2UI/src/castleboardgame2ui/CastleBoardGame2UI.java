@@ -101,6 +101,10 @@ public class CastleBoardGame2UI {
         dice.setIcon(DiceImage);
         dice.setLocation(1100, 100);
         dice.setSize(50, 1227);
+        JLabel victoryMessage = new JLabel();
+        victoryMessage.setLocation(175, -250);
+        victoryMessage.setSize(750, 250);
+        
         Button Dice = new Button("Roll the dice");
         Dice.setLocation(1075, 25);
         Dice.setSize(150, 50);
@@ -128,7 +132,7 @@ public class CastleBoardGame2UI {
             @Override
             public void actionPerformed(ActionEvent ae) {                    
                 int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
-                haveGo(team, turnIndicator, scoreIndicator);
+                haveGo(team, turnIndicator, scoreIndicator, victoryMessage);
             }
         });
         JLabel concealer1 = new JLabel();
@@ -141,7 +145,7 @@ public class CastleBoardGame2UI {
         concealer2.setIcon(readImage("grey.png", 50, 100));
         panel.add(Dice);
         panel.add(turnIndicator);
-        
+        panel.add(victoryMessage);
         panel.add(groundInfo);
         panel.add(doNothing);
         panel.add(scoreIndicator);
@@ -287,7 +291,7 @@ public class CastleBoardGame2UI {
                                 grid[newX][newY].teamOccupying = -1;
                                 
                             }
-                            haveGo(team, turnIndicator, scoreIndicator);
+                            haveGo(team, turnIndicator, scoreIndicator, victoryMessage);
                             okToMove = false;
                         }
                         else if(grid[newX][newY].teamOccupying == team)
@@ -303,7 +307,7 @@ public class CastleBoardGame2UI {
                             grid[newX][newY].teamOccupying = team;
                             //MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, moveSpeed);
                             MovementAnimation.newAnimation(anim, target, 50 * (newX - x), 50 * (newY - y), moveSpeed);
-                            haveGo(team, turnIndicator, scoreIndicator);
+                            haveGo(team, turnIndicator, scoreIndicator, victoryMessage);
                             
                         }
                     }
@@ -472,7 +476,7 @@ public class CastleBoardGame2UI {
         Image sImage = image.getScaledInstance(height, width, Image.SCALE_SMOOTH);
         return new ImageIcon(sImage);
     }
-    public void haveGo(int team, JLabel turnIndicator, JLabel scoreIndicator)
+    public void haveGo(int team, JLabel turnIndicator, JLabel scoreIndicator, JLabel victoryMessage)
     {
         numberOfMoves[team]--;
         if(numberOfMoves[team] < 1)
@@ -493,7 +497,8 @@ public class CastleBoardGame2UI {
         //Victory check
         if(grid[10][9].teamOccupying == 1 && grid[10][10].teamOccupying == 1)
         {
-            System.out.println("VICTORY FOR REDS!");
+            victoryMessage.setIcon(readImage("VictoryGraphic.png", 750, 250));
+            MovementAnimation.newAnimation(anim, victoryMessage, 0, 600, 1000);
         }
         //Score check
         int deltaScore = 0;
@@ -516,9 +521,11 @@ public class CastleBoardGame2UI {
         }
         blueScore += deltaScore;
         scoreIndicator.setText("Blue score: " + blueScore);
-        if(blueScore > 20000)
+        if(blueScore > 2000)
         {
             System.out.println("VICTORY FOR BLUES!");
+            victoryMessage.setIcon(readImage("VictoryGraphicBlue.png", 750, 250));
+            MovementAnimation.newAnimation(anim, victoryMessage, 0, 600, 1000);
         }
     }
 }
