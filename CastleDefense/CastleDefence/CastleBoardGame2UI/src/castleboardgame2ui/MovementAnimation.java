@@ -75,24 +75,20 @@ public class MovementAnimation
                         if(percentile >= 0.97)
                         {
                             percentile = 1;
-                            System.out.println("Finished animation");
                             toRemove.add(animation);
                         }
                         percentile = cubicInOut(percentile);
-                        System.out.println(percentile);
                         animation.image.setLocation(new Point(getPercentile(percentile * 100, animation.startPos.x, animation.targetPos.x), getPercentile(percentile * 100, animation.startPos.y, animation.targetPos.y)));
                     }
                     else
                     {
                         percentile = 1;
-                        System.out.println("Finished animation");
                         animation.image.setLocation(new Point(getPercentile(percentile * 100, animation.startPos.x, animation.targetPos.x), getPercentile(percentile * 100, animation.startPos.y, animation.targetPos.y)));
                         toRemove.add(animation);
                     }
                     if(percentile > 1)
                     {
                         percentile = 1;
-                        System.out.println("Finished animation");
                         animation.image.setLocation(new Point(getPercentile(percentile * 100, animation.startPos.x, animation.targetPos.x), getPercentile(percentile * 100, animation.startPos.y, animation.targetPos.y)));
                         toRemove.add(animation);
                     }
