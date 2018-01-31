@@ -17,6 +17,8 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -39,9 +41,10 @@ public class CastleBoardGame2UI {
     int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
     
+    int blueScore = 0;
     int diceRoll = 1;
-    int moving = 0;
-    int currentTeam = 1;
+    int moving = 1;
+    int currentTeam = 0;
     int[] numberOfMoves = {5, 5};
     ArrayList<MovementAnimation> anim = new ArrayList<>();
     ArrayList<MovementAnimation> toRemove = new ArrayList<>();
@@ -49,7 +52,7 @@ public class CastleBoardGame2UI {
     ArrayList<JLabel> pieces = new ArrayList<>();
     ArrayList<JLabel> highlighters = new ArrayList<>();
     int[][] directions = new int[][] {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
-    Terrain[][] grid = new Terrain[20][19];
+    Terrain[][] grid = new Terrain[22][21];
     
     public CastleBoardGame2UI(){     
         //Creates a new JFrame
@@ -79,18 +82,18 @@ public class CastleBoardGame2UI {
     public JPanel RefreshPanel1() {
         for(int i = 0; i < 20; i++){
             for(int j = 0; j < 19; j++){
-                grid[i][j] = new Terrain(Terrain.grass);
+                grid[i][j] = new Terrain();
             }
         }
         for (int i = 5; i < 15; i++){
             for(int j = 5; j < 15; j++){
-                grid[i][j] = new Terrain(Terrain.stone);
+                grid[i][j] = new Terrain();
             }
         }
         MovementAnimation.enableAnimation(anim, toRemove);
         //Creates a new JPanel
         JPanel panel = new JPanel();
-        
+        panel.setBackground(new Color(195, 195, 195));
         ImageIcon DiceImage = readImage("DiceImage2.png", 50, 1227);
         JLabel dice = new JLabel();
         dice.setBackground(new Color(0, 0, 0, 0));
@@ -99,12 +102,31 @@ public class CastleBoardGame2UI {
         dice.setLocation(1100, 100);
         dice.setSize(50, 1227);
         Button Dice = new Button("Roll the dice");
-        Dice.setLocation(1050, 25);
+        Dice.setLocation(1075, 25);
         Dice.setSize(150, 50);
         Dice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {                    
                 rollDice(dice);
+            }
+        });
+        JLabel scoreIndicator = new JLabel();
+        scoreIndicator.setLocation(1075, 150);
+        scoreIndicator.setSize(150, 150);
+        JLabel turnIndicator = new JLabel();
+        turnIndicator.setLocation(1075, 300);
+        turnIndicator.setSize(150, 150);
+        JLabel groundInfo = new JLabel();
+        groundInfo.setLocation(1075, 350);
+        groundInfo.setSize(150, 500);
+        Button doNothing = new Button("Do nothing");
+        doNothing.setLocation(1075, 200);
+        doNothing.setSize(150, 50);
+        doNothing.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {                    
+                int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
+                haveGo(team, turnIndicator, scoreIndicator);
             }
         });
         JLabel concealer1 = new JLabel();
@@ -116,6 +138,11 @@ public class CastleBoardGame2UI {
         concealer2.setLocation(1100, 0);
         concealer2.setIcon(readImage("grey.png", 50, 100));
         panel.add(Dice);
+        panel.add(turnIndicator);
+        
+        panel.add(groundInfo);
+        panel.add(doNothing);
+        panel.add(scoreIndicator);
         panel.add(concealer1);
         panel.add(concealer2);
         panel.add(dice);
@@ -162,9 +189,9 @@ public class CastleBoardGame2UI {
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
             pieces.get(pieces.size() - 1).setIcon(CounterImage2);
-            pieces.get(pieces.size() - 1).setLocation(50 * (i+6), 0);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i+7), 50 * 9);
             pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i+6][0].teamOccupying = 0;
+            grid[i+7][9].teamOccupying = 0;
         }
         //Give the pieces behaviour (this is a long one)
         int count1 = 0;
@@ -190,7 +217,7 @@ public class CastleBoardGame2UI {
                     }
                     else
                     {
-                        System.out.println("Not your piece!");
+                        //System.out.println("Not your piece!");
                     }
                 }
                 @Override
@@ -239,27 +266,32 @@ public class CastleBoardGame2UI {
 //                        System.out.println("To " + newX * 50 + ", " + newY * 50 + ": " + grid[newX][newY].teamOccupying);
                         if(grid[newX][newY].teamOccupying == 1 - team)
                         {
-                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
+                            
+//                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
                             int diceOutput = rollDice(dice);
+                            int rollTarget = (int) Math.floor((50 + grid[newX][newY].defendingBonus - grid[x][y].attackingBonus) / 17);
+
+                            groundInfo.setText("<html><body style='width: 120px'>Summary\nYour ground: " + grid[x][y].terrainType + ", your attack bonus: " + grid[x][y].attackingBonus + "; their ground: " + grid[newX][newY].terrainType + ", their defending bonus: " + grid[newX][newY].defendingBonus + "; need a " + rollTarget + " to take the piece. (rolled a " + diceOutput + ")");
 //                            System.out.println("Collision with enemy!");
-//                            int rand = (int) Math.floor(Math.random() * 100);
-//                            System.out.println("Generated " + rand + ", needed " + (50 + grid[newX][newY].defensiveBonus));
-//                            if(diceOutput * 17 > 50 + grid[newX][newY].defensiveBonus)
-//                            {
-//                                int cX = findCounterByLocation(newX, newY, pieces).getLocation().x;
-//                                int cY = findCounterByLocation(newX, newY, pieces).getLocation().y;
-//                                int cTargetX = (1 - grid[newX][newY].teamOccupying) * 11 * 50;
-//                                int cTargetY = (1 - grid[newX][newY].teamOccupying) * 50 * 50;
-//                                MovementAnimation.newAnimation(anim, findCounterByLocation(newX, newY, pieces), cTargetX-cX, cTargetY-cY, 3000);
-//                            }
+//                            System.out.println("Rolled a " + diceOutput + ", needed a " + rollTarget + " to take the piece.");
+//                            System.out.println("Generated " + rand + ", needed " + (50 + grid[newX][newY].defendingBonus));
+                            if(diceOutput * 17  + grid[x][y].attackingBonus > 50 + grid[newX][newY].defendingBonus)
+                            {
+                                int cX = findCounterByLocation(newX, newY, pieces).getLocation().x;
+                                int cY = findCounterByLocation(newX, newY, pieces).getLocation().y;
+                                int cTargetX = (1 - grid[newX][newY].teamOccupying) * 11 * 50;
+                                int cTargetY = (1 - grid[newX][newY].teamOccupying) * 50 * 50;
+                                MovementAnimation.newAnimation(anim, findCounterByLocation(newX, newY, pieces), cTargetX-cX, cTargetY-cY, 3000);
+                                grid[newX][newY].teamOccupying = -1;
+                                
+                            }
+                            haveGo(team, turnIndicator, scoreIndicator);
                             okToMove = false;
-//                            System.out.println(team);
-//                            System.out.println(grid[newX][newY].teamOccupying);
                         }
                         else if(grid[newX][newY].teamOccupying == team)
                         {
-                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
-                            System.out.println("Collision with team!");
+//                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
+//                            System.out.println("Collision with team!");
                             okToMove = false;
                         }
                         //Move the piece
@@ -269,12 +301,8 @@ public class CastleBoardGame2UI {
                             grid[newX][newY].teamOccupying = team;
                             //MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, moveSpeed);
                             MovementAnimation.newAnimation(anim, target, 50 * (newX - x), 50 * (newY - y), moveSpeed);
-                            numberOfMoves[team]--;
-                            if(numberOfMoves[team] < 1)
-                            {
-                                numberOfMoves[team] = 5;
-                                currentTeam = 1 - currentTeam;
-                            }
+                            haveGo(team, turnIndicator, scoreIndicator);
+                            
                         }
                     }
                 }
@@ -328,6 +356,7 @@ public class CastleBoardGame2UI {
                     if ((j == 5) || (j == 15)) {
                         //Stone color
                         stone[i].setIcon(stoneImage);
+                        grid[i][j] = new Terrain("stone");
                     } else {
                         Integer diceInt = 0;
                         Random rand = new Random();
@@ -335,27 +364,33 @@ public class CastleBoardGame2UI {
                         if (diceInt > 2) {
                             //Grass color
                             stone[i].setIcon(grassImage);
+                            grid[i][j] = new Terrain("grass");
                         } else {
                             //Dirt color
                             stone[i].setIcon(dirtImage);
+                            grid[i][j] = new Terrain("hill");
                         }
                         if ((i >= 5 && i < 15) && j >= 6 && j < 15) {
                             //Castle color
                             stone[i].setIcon(InteriorImage);
+                            grid[i][j] = new Terrain("wood");
                         }
                         //Sets the color of the walls
                         if (i == 5 && j < 15 && j >= 5) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
+                            grid[i][j] = new Terrain("wall");
                         }
                         if (i == 14 && j < 15 && j >= 5) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
+                            grid[i][j] = new Terrain("wall");
                         }
                         //Sets the color of the keep
                         if ((i == 9 || i == 10) && j == 10) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
+                            grid[i][j] = new Terrain("wood");
                         }
                     }
                 } else {
@@ -385,7 +420,7 @@ public class CastleBoardGame2UI {
     {
         for(JLabel label : list)
         {
-            if(Math.abs(label.getLocation().x / 50 - x) < 5 && Math.abs(label.getLocation().y / 50 - y) < 5)
+            if(Math.abs(label.getLocation().x / 50 - x) < 1 && Math.abs(label.getLocation().y / 50 - y) < 1)
             {
                 return label;
             }
@@ -434,5 +469,43 @@ public class CastleBoardGame2UI {
         }
         Image sImage = image.getScaledInstance(height, width, Image.SCALE_SMOOTH);
         return new ImageIcon(sImage);
+    }
+    public void haveGo(int team, JLabel turnIndicator, JLabel scoreIndicator)
+    {
+        numberOfMoves[team]--;
+        if(numberOfMoves[team] < 1)
+        {
+            numberOfMoves[team] = 5;
+            currentTeam = 1 - currentTeam;
+        }
+        String teamName = "";
+        if(currentTeam == 1)
+        {
+            teamName = "reds";
+        }
+        else
+        {
+            teamName = "blues";
+        }
+        turnIndicator.setText("<html><body style='width: 120px'>Current team: " + teamName + ", number of moves left: " + numberOfMoves[team]);
+        //Victory check
+        if(grid[10][9].teamOccupying == 1 && grid[10][10].teamOccupying == 1)
+        {
+            System.out.println("VICTORY FOR REDS!");
+        }
+        //Score check
+        int deltaScore = 0;
+        for(JLabel label : pieces)
+        {
+            if(pieces.indexOf(label) % 2 != 0)
+            {
+                int x = label.getLocation().x / 50;
+                int y = label.getLocation().y / 50;
+                deltaScore += grid[x][y].attackingBonus;
+                deltaScore += grid[x][y].defendingBonus;
+            }
+        }
+        blueScore += deltaScore;
+        scoreIndicator.setText("Blue score: " + blueScore);
     }
 }
