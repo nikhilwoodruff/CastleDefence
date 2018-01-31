@@ -117,6 +117,7 @@ public class CastleBoardGame2UI {
         JLabel turnIndicator = new JLabel();
         turnIndicator.setLocation(1075, 300);
         turnIndicator.setSize(150, 150);
+        turnIndicator.setText("<html><body style='width: 120px'>Current team: blues, number of moves left: 5");
         JLabel groundInfo = new JLabel();
         groundInfo.setLocation(1075, 350);
         groundInfo.setSize(150, 500);
