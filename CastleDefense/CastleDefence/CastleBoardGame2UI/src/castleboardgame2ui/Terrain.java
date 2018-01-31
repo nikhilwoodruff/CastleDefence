@@ -12,10 +12,12 @@ package castleboardgame2ui;
 public class Terrain {
     public String terrainType;
     public int teamOccupying;
-    public int defensiveBonus;
-    public static String grass = "grass";
-    public static String stone = "stone";
-    
+    public int defendingBonus;
+    public int attackingBonus;
+    public Terrain()
+    {
+        teamOccupying = -1;
+    }
     public Terrain(String type)
     {
         terrainType = type;
@@ -23,11 +25,23 @@ public class Terrain {
         switch(type)
         {
             case "grass":
-                defensiveBonus = 5;
+                defendingBonus = 0;
+                attackingBonus = 0;
+                break;
+            case "hill":
+                defendingBonus = 25;
+                attackingBonus = 30;
                 break;
             case "stone":
-                defensiveBonus = 15;
+                defendingBonus = 35;
+                attackingBonus = 20;
                 break;
+            case "wood":
+                defendingBonus = 15;
+                attackingBonus = 10;
+            case "wall":
+                defendingBonus = 40;
+                attackingBonus = 15;
         }
     }
 }
