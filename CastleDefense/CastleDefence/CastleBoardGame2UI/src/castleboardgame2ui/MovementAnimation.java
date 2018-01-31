@@ -36,7 +36,14 @@ public class MovementAnimation
     {
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(() -> {
-            animateAll(anim, toRemove);
+            try
+            {
+                animateAll(anim, toRemove);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.toString());
+            }
         }, 0, 1, TimeUnit.MILLISECONDS);
     }
     
