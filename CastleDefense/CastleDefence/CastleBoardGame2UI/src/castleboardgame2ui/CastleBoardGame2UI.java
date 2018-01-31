@@ -502,11 +502,22 @@ public class CastleBoardGame2UI {
             {
                 int x = label.getLocation().x / 50;
                 int y = label.getLocation().y / 50;
-                deltaScore += grid[x][y].attackingBonus;
-                deltaScore += grid[x][y].defendingBonus;
+                try
+                {
+                    deltaScore += grid[x][y].attackingBonus;
+                    deltaScore += grid[x][y].defendingBonus;
+                }
+                catch(Exception e)
+                {
+                    
+                }
             }
         }
         blueScore += deltaScore;
         scoreIndicator.setText("Blue score: " + blueScore);
+        if(blueScore > 20000)
+        {
+            System.out.println("VICTORY FOR BLUES!");
+        }
     }
 }

@@ -42,7 +42,6 @@ public class MovementAnimation
             }
             catch (Exception e)
             {
-                System.out.println(e.toString());
             }
         }, 0, 1, TimeUnit.MILLISECONDS);
     }
