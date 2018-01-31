@@ -5,18 +5,15 @@
  */
 package castleboardgame2ui;
 
-import castleboardgame2ui.DiceThread;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,8 +22,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,7 +41,7 @@ public class CastleBoardGame2UI {
     
     int diceRoll = 1;
     int moving = 0;
-    int currentTeam = 0;
+    int currentTeam = 1;
     int[] numberOfMoves = {5, 5};
     ArrayList<MovementAnimation> anim = new ArrayList<>();
     ArrayList<MovementAnimation> toRemove = new ArrayList<>();
@@ -57,7 +54,6 @@ public class CastleBoardGame2UI {
     public CastleBoardGame2UI(){     
         //Creates a new JFrame
         //Adds the panels to the frame and sets the size of the frame
-        frame.add(RefreshPanel2(null));
         frame.add(RefreshPanel1());
         frame.setSize(1250, 1025);
         //Sets the default operation of the frame and set it to be visible to the user
@@ -76,21 +72,11 @@ public class CastleBoardGame2UI {
     public static void main(String[] args) {
         CastleBoardGame2UI cbg = new CastleBoardGame2UI();
     }
-    // TO REPLACE WITH ANIMATED DICE...
-    static String rollTheDice() {
-        //Declares and intialises the variables needed
-        String diceNumber = "";
-        Integer diceInt = 0;
-        Random rand = new Random();
-        //Generates a random interger from 1 to 6
-        diceInt = rand.nextInt(6) + 1;
-        System.out.println("Hello");
-        //Passes the interger to a string
-        diceNumber = diceInt.toString();
-        //Returns the string value
-        return diceNumber;
+     void RefreshFrame() {
+        frame.repaint();
+        frame.validate();
     }
-    public JPanel RefreshPanel2(String overide) {
+    public JPanel RefreshPanel1() {
         for(int i = 0; i < 20; i++){
             for(int j = 0; j < 19; j++){
                 grid[i][j] = new Terrain(Terrain.grass);
@@ -101,96 +87,41 @@ public class CastleBoardGame2UI {
                 grid[i][j] = new Terrain(Terrain.stone);
             }
         }
-        //Creates a new JPanel 
-        JPanel panel2 = new JPanel();
-        panel2.setLayout(null);
-        //Creates and initialises the needed JLabels
-        //JLabel text = new JLabel("Status");
-        //text.setLocation(25, 25);
-        //text.setSize(50, 50);
-        Button Dice = new Button("Roll the dice");
-        Dice.setLocation(50, 25);
-        Dice.setSize(150, 50);
-        JLabel concealer1 = new JLabel("test");
-        concealer1.setSize(50, 869);
-        concealer1.setLocation(100, 151);
-        concealer1.setIcon(readImage("grey.png", 50, 869));
-        JLabel concealer2 = new JLabel("test");
-        concealer2.setSize(50, 100);
-        concealer2.setLocation(100, 0);
-        concealer2.setIcon(readImage("grey.png", 50, 100));
-        //JLabel diceLabel = new JLabel("0");
-        //diceLabel.setLocation(75, 25);
-        //diceLabel.setSize(50, 50);
-        //JLabel CombatStrength = new JLabel("PLACEHOLDER");
-        //CombatStrength.setLocation(100, 25);
-        //CombatStrength.setSize(50, 50);
-//        BufferedImage imgL = null;
-//        try {
-//            imgL = ImageIO.read(new File("H:\\Downloads\\Computing\\images (2).jpg"));
-//        } catch (IOException e) {
-//        }
-//        Image dimgL = imgL.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-//        ImageIcon leatherImage = new ImageIcon(dimgL);
-        //Sets up the settings of the Panel
-        panel2.setSize(new Dimension(200, 1000));
-        panel2.setBackground(new Color(195, 195, 195));
-        panel2.setLocation(1050, 0);
-        //Sets the sizes of the JLabels
-        Dice.setMaximumSize(new Dimension(200, 50));
-        Dice.setMinimumSize(new Dimension(200, 50));
-        //Adds the JLables to the Panel
-        //panel2.add(text);
-        panel2.add(Dice);
-//        panel2.add(diceLabel);
-//        panel2.add(CombatStrength);
-        //Loads dice image
+        MovementAnimation.enableAnimation(anim, toRemove);
+        //Creates a new JPanel
+        JPanel panel = new JPanel();
+        
         ImageIcon DiceImage = readImage("DiceImage2.png", 50, 1227);
         JLabel dice = new JLabel();
         dice.setBackground(new Color(0, 0, 0, 0));
         dice.setVisible(true);
         dice.setIcon(DiceImage);
-        dice.setLocation(100, 100);
+        dice.setLocation(1100, 100);
         dice.setSize(50, 1227);
-        panel2.add(concealer2);
-        panel2.add(concealer1);
-        panel2.add(dice);
-        //Sets the Panel layout to BoxLayout
-        
-        //panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
-        //Adds a new action listener that cretates a new thread when the button is pressed to activate the mouse throwing animation
+        Button Dice = new Button("Roll the dice");
+        Dice.setLocation(1050, 25);
+        Dice.setSize(150, 50);
         Dice.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
-                //Button btn = (Button) ae.getSource();
-                //DiceThread dt = new DiceThread(diceLabel);
-                //Thread t = new Thread(dt);
-                //t.start();                          
-                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/DiceSound.wav"));
-                    dice.setLocation(100, 153 - diceRoll * 51);
-                    int rand = (int) Math.floor(Math.random() * 6);
-                    MovementAnimation.newAnimation(anim, dice, 0, -((6 - diceRoll) * 51 + 612 + rand * 51 + 51), 2000);
-                    diceRoll = rand + 1;
-                    updateDiceRoll(rand + 1);
-                    System.out.println(diceRoll);
-                //Sound.HandleSound(new File("DiceSound.wav"));
+            public void actionPerformed(ActionEvent ae) {                    
+                rollDice(dice);
             }
         });
-        //Returns the value of the JPanel
-        return panel2;
-    }
-    void updateDiceRoll(int newNumber)
-    {
-        diceRoll = newNumber;
-    }
-     void RefreshFrame() {
-        frame.repaint();
-        frame.validate();
-    }
-    public JPanel RefreshPanel1() {
-        MovementAnimation.enableAnimation(anim, toRemove);
-        //Creates a new JPanel
-        JPanel panel = new JPanel();
+        JLabel concealer1 = new JLabel();
+        concealer1.setSize(50, 869);
+        concealer1.setLocation(1100, 151);
+        concealer1.setIcon(readImage("grey.png", 50, 869));
+        JLabel concealer2 = new JLabel();
+        concealer2.setSize(50, 100);
+        concealer2.setLocation(1100, 0);
+        concealer2.setIcon(readImage("grey.png", 50, 100));
+        panel.add(Dice);
+        panel.add(concealer1);
+        panel.add(concealer2);
+        panel.add(dice);
+        
+        
+        
         //Creates the variables needed 
         JLabel dirt = new JLabel("");
         JLabel grass = new JLabel("");
@@ -227,13 +158,13 @@ public class CastleBoardGame2UI {
             pieces.get(pieces.size() - 1).setIcon(CounterImage);
             pieces.get(pieces.size() - 1).setLocation(50 * (i), 0);
             pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i][0].teamOccupying = 0;
+            grid[i][0].teamOccupying = 1;
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
             pieces.get(pieces.size() - 1).setIcon(CounterImage2);
-            pieces.get(pieces.size() - 1).setLocation(50 * (i+10), 0);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i+6), 0);
             pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i+10][0].teamOccupying = 1;
+            grid[i+6][0].teamOccupying = 0;
         }
         //Give the pieces behaviour (this is a long one)
         int count1 = 0;
@@ -259,8 +190,6 @@ public class CastleBoardGame2UI {
                     }
                     else
                     {
-                        System.out.println(team);
-                        System.out.println(currentTeam);
                         System.out.println("Not your piece!");
                     }
                 }
@@ -310,22 +239,26 @@ public class CastleBoardGame2UI {
 //                        System.out.println("To " + newX * 50 + ", " + newY * 50 + ": " + grid[newX][newY].teamOccupying);
                         if(grid[newX][newY].teamOccupying == 1 - team)
                         {
-                            System.out.println("Collision with enemy!");
-                            int rand = (int) Math.floor(Math.random() * 100);
-                            if(rand < 50 - grid[newX][newY].defensiveBonus)
-                            {
-                                int cX = findCounterByLocation(newX, newY, pieces).getLocation().x;
-                                int cY = findCounterByLocation(newX, newY, pieces).getLocation().y;
-                                int cTargetX = (1 - grid[newX][newY].teamOccupying) * 11 * 50;
-                                int cTargetY = (1 - grid[newX][newY].teamOccupying) * 50 * 50;
-                                MovementAnimation.newAnimation(anim, findCounterByLocation(newX, newY, pieces), cTargetX-cX, cTargetY-cY, 3000);
-                            }
+                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
+                            int diceOutput = rollDice(dice);
+//                            System.out.println("Collision with enemy!");
+//                            int rand = (int) Math.floor(Math.random() * 100);
+//                            System.out.println("Generated " + rand + ", needed " + (50 + grid[newX][newY].defensiveBonus));
+//                            if(diceOutput * 17 > 50 + grid[newX][newY].defensiveBonus)
+//                            {
+//                                int cX = findCounterByLocation(newX, newY, pieces).getLocation().x;
+//                                int cY = findCounterByLocation(newX, newY, pieces).getLocation().y;
+//                                int cTargetX = (1 - grid[newX][newY].teamOccupying) * 11 * 50;
+//                                int cTargetY = (1 - grid[newX][newY].teamOccupying) * 50 * 50;
+//                                MovementAnimation.newAnimation(anim, findCounterByLocation(newX, newY, pieces), cTargetX-cX, cTargetY-cY, 3000);
+//                            }
                             okToMove = false;
 //                            System.out.println(team);
 //                            System.out.println(grid[newX][newY].teamOccupying);
                         }
                         else if(grid[newX][newY].teamOccupying == team)
                         {
+                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
                             System.out.println("Collision with team!");
                             okToMove = false;
                         }
@@ -468,6 +401,15 @@ public class CastleBoardGame2UI {
             MovementAnimation.newAnimation(anim, pointer, target.getLocation().x - pointer.getLocation().x - (directions[count][0] * 50), target.getLocation().y - 30 - pointer.getLocation().y - (directions[count][1] * 50) + 30, highlighterSpeed);
             count++;
         }
+    }
+    public int rollDice(JLabel dice)
+    {
+        HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/DiceSound.wav"));
+        dice.setLocation(1100, 153 - diceRoll * 51);
+        int rand = (int) Math.floor(Math.random() * 6);
+        MovementAnimation.newAnimation(anim, dice, 0, -((6 - diceRoll) * 51 + 612 + rand * 51 + 51), 2000);
+        diceRoll = rand + 1;
+        return diceRoll;
     }
     public void HandleSound(InputStream file) {
         //System.out.println("castleboardgame2ui.CastleBoardGame2UI.HandleSound()");
