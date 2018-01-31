@@ -111,7 +111,8 @@ public class CastleBoardGame2UI {
             }
         });
         JLabel scoreIndicator = new JLabel();
-        scoreIndicator.setLocation(1075, 150);
+        scoreIndicator.setText("Blue score: " + blueScore);
+        scoreIndicator.setLocation(1075, 250);
         scoreIndicator.setSize(150, 150);
         JLabel turnIndicator = new JLabel();
         turnIndicator.setLocation(1075, 300);
@@ -275,7 +276,7 @@ public class CastleBoardGame2UI {
 //                            System.out.println("Collision with enemy!");
 //                            System.out.println("Rolled a " + diceOutput + ", needed a " + rollTarget + " to take the piece.");
 //                            System.out.println("Generated " + rand + ", needed " + (50 + grid[newX][newY].defendingBonus));
-                            if(diceOutput * 17  + grid[x][y].attackingBonus > 50 + grid[newX][newY].defendingBonus)
+                            if(diceOutput * 17  + grid[x][y].attackingBonus >= 50 + grid[newX][newY].defendingBonus)
                             {
                                 int cX = findCounterByLocation(newX, newY, pieces).getLocation().x;
                                 int cY = findCounterByLocation(newX, newY, pieces).getLocation().y;
