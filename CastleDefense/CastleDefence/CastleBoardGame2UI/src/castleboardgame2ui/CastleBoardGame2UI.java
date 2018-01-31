@@ -105,15 +105,15 @@ public class CastleBoardGame2UI {
         victoryMessage.setLocation(175, -250);
         victoryMessage.setSize(750, 250);
         
-        Button Dice = new Button("Roll the dice");
-        Dice.setLocation(1075, 25);
-        Dice.setSize(150, 50);
-        Dice.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {                    
-                rollDice(dice);
-            }
-        });
+//        Button Dice = new Button("Roll the dice");
+//        Dice.setLocation(1075, 25);
+//        Dice.setSize(150, 50);
+//        Dice.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {                    
+//                rollDice(dice);
+//            }
+//        });
         JLabel scoreIndicator = new JLabel();
         scoreIndicator.setText("Blue score: " + blueScore);
         scoreIndicator.setLocation(1075, 250);
@@ -143,7 +143,7 @@ public class CastleBoardGame2UI {
         concealer2.setSize(50, 100);
         concealer2.setLocation(1100, 0);
         concealer2.setIcon(readImage("grey.png", 50, 100));
-        panel.add(Dice);
+//        panel.add(Dice);
         panel.add(turnIndicator);
         panel.add(victoryMessage);
         panel.add(groundInfo);
