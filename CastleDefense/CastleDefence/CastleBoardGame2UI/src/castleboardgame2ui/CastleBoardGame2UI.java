@@ -297,7 +297,7 @@ public class CastleBoardGame2UI {
         spawnPlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {        
-                if(numberOfReinforcements < 4.)
+                if(numberOfReinforcements < 4)
                 {
                     MovementAnimation.newAnimation(anim, pieces.get(11+2*numberOfReinforcements), 0, -600, 1000);
                     grid[10][13].teamOccupying = 0;
