@@ -206,6 +206,7 @@ frame.setLocationRelativeTo(null);
                 MovementAnimation.newAnimation(anim, pieces.get(11+2*numberOfReinforcements), 0, -600, 1000);
                 grid[10][13].teamOccupying = 0;
                 numberOfReinforcements++;
+                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/coins.wav"));
             }
         });
         Button doNothing = new Button("Do nothing");
@@ -401,7 +402,7 @@ frame.setLocationRelativeTo(null);
                         if(okToMove)
                         {
 //                            System.out.println("Moving from: " + x + ", " + y + " to " + newX + ", " + newY);
-                            System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
+//                            System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
                             if(!grid[x][y].terrainType.equals("wall") && grid[newX][newY].terrainType.equals("wall"))
                             {
                                 done[moving] = true;
