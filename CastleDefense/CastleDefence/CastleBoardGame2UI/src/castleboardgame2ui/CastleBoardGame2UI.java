@@ -42,6 +42,7 @@ public class CastleBoardGame2UI {
     int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
     
+    boolean[] done = new boolean[10];
     int blueScore = 0;
     int diceRoll = 1;
     int moving = 1;
@@ -451,8 +452,8 @@ public class CastleBoardGame2UI {
                     int index = highlighters.indexOf(label);
                     if(pieces.get(moving).getLocation().x - label.getLocation().x == directions[index][0] * 50)
                     {
-                        //When a direction pointer is clicked...
-                    int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
+                            //When a direction pointer is clicked...
+                        int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
                         JLabel target = pieces.get(moving);
                         int x = (int) Math.round(target.getLocation().x / 50);
                         int y = (int) Math.round(target.getLocation().y / 50);
@@ -486,7 +487,7 @@ public class CastleBoardGame2UI {
                                 int cTargetY = (1 - grid[newX][newY].teamOccupying) * 50 * 50;
                                 MovementAnimation.newAnimation(anim, findCounterByLocation(newX, newY, pieces), cTargetX-cX, cTargetY-cY, 3000);
                                 grid[newX][newY].teamOccupying = -1;
-                                
+                                done[moving] = true;
                             }
                             haveGo(team, turnIndicator, scoreIndicator, victoryMessage, fog);
                             okToMove = false;
@@ -500,13 +501,16 @@ public class CastleBoardGame2UI {
                         //Move the piece
                         if(okToMove)
                         {
-                            HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/march.wav"));
+                            HandleSound(CastleBoardGame2UI.class .getResourceAsStream("march.wav"));
                             grid[x][y].teamOccupying = -1;
                             grid[newX][newY].teamOccupying = team;
                             //MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, moveSpeed);
                             MovementAnimation.newAnimation(anim, target, 50 * (newX - x), 50 * (newY - y), moveSpeed);
                             haveGo(team, turnIndicator, scoreIndicator, victoryMessage, fog);
-                            
+                            if(!grid[x][y].terrainType.equals("wall") && grid[newX][newY].terrainType.equals("wall"))
+                            {
+                                done[moving] = true;
+                            }
                         }
                     }
                 }
@@ -633,12 +637,15 @@ public class CastleBoardGame2UI {
     }
     public void setUpHighlighters(ArrayList<JLabel> pieces, int moving, ArrayList<JLabel> highlighters, ArrayList<MovementAnimation> anim, int[][] directions)
     {
-        JLabel target = pieces.get(moving);
-        int count = 0;
-        for(JLabel pointer : highlighters)
+        if(!done[moving])
         {
-            MovementAnimation.newAnimation(anim, pointer, target.getLocation().x - pointer.getLocation().x - (directions[count][0] * 50), target.getLocation().y - 30 - pointer.getLocation().y - (directions[count][1] * 50) + 30, highlighterSpeed);
-            count++;
+            JLabel target = pieces.get(moving);
+            int count = 0;
+            for(JLabel pointer : highlighters)
+            {
+                MovementAnimation.newAnimation(anim, pointer, target.getLocation().x - pointer.getLocation().x - (directions[count][0] * 50), target.getLocation().y - 30 - pointer.getLocation().y - (directions[count][1] * 50) + 30, highlighterSpeed);
+                count++;
+            }
         }
     }
     public int rollDice(JLabel dice)
@@ -651,7 +658,6 @@ public class CastleBoardGame2UI {
         return diceRoll;
     }
     public void HandleSound(InputStream file) {
-        //System.out.println("castleboardgame2ui.CastleBoardGame2UI.HandleSound()");
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
             Clip clip = AudioSystem.getClip();
@@ -681,6 +687,10 @@ public class CastleBoardGame2UI {
         {
             numberOfMoves[team] = 5;
             currentTeam = 1 - currentTeam;
+            for(boolean value : done)
+            {
+                value = true;
+            }
             if(currentTeam == 0)
             {
                 MovementAnimation.newAnimation(anim, fog, 0, -1100, 1000);
