@@ -17,18 +17,19 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 /**
  *
@@ -53,21 +54,181 @@ public class CastleBoardGame2UI {
     ArrayList<JLabel> highlighters = new ArrayList<>();
     int[][] directions = new int[][] {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
     Terrain[][] grid = new Terrain[22][21];
+    String playerName1;
+    String playerName2;
     
-    public CastleBoardGame2UI(){     
-        //Creates a new JFrame
-        //Adds the panels to the frame and sets the size of the frame
-        frame.add(RefreshPanel1());
-        frame.setSize(1250, 1025);
-        //Sets the default operation of the frame and set it to be visible to the user
+    public CastleBoardGame2UI() {
+
+ 
+
+        //Sets the look of the UI to the deafult Windows 10 look depends on the OS of the system running the program
+
+        try {
+
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        } catch (Exception e) {
+
+        }
+
+        //closes program when you close the JFRAME
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+
+ 
+
+        JPanel Start = new JPanel();
+
+//        JLabel greet = new JLabel("How many players are there ?");
+
+        JLabel player1Label = new JLabel("Enter Team 1's name");
+
+        JLabel player2Label = new JLabel("Enter Team 2's name");
+
+//        JLabel player3Label = new JLabel("Enter player 3's name");
+
+//        JLabel player4Label = new JLabel("Enter player 4's name");
+
+//        String[] players = { "2", "4"};
+
+        JButton proccede = new JButton("Continue");
+
+        JTextField player1 = new JTextField();
+
+        JTextField player2 = new JTextField();
+
+//        JTextField player3 = new JTextField();
+
+//        JTextField player4 = new JTextField();
+
+ 
+
+        Start.setLayout(new BoxLayout(Start, BoxLayout.PAGE_AXIS));
+
+ 
+
+//        JComboBox playerNumbers = new JComboBox(players);
+
+//
+
+//        Start.add(greet);
+
+//        Start.add(playerNumbers);
+
+        Start.add(player1Label);
+
+        Start.add(player1);
+
+        Start.add(player2Label);
+
+        Start.add(player2);
+
+//        Start.add(player3Label);
+
+//        Start.add(player3);
+
+////        Start.add(player4Label);
+
+//        Start.add(player4);
+
+        Start.add(proccede);
+
+ 
+
+        frame.add(Start);
+
         frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
-        //RefreshFrame();
-        //nested for loops assign the selected values of the
-        //array the different terrain types available
-        
+
+        frame.setSize(500, 500);
+
+ 
+
+        proccede.addActionListener(new ActionListener() {
+
+ 
+
+            @Override
+
+            public void actionPerformed(ActionEvent ae) {
+
+ 
+
+                playerName1 = player1.getText();
+
+                if(playerName1 == ""){
+
+                playerName1 = "Blue";
+
+                }
+
+                playerName2 = player2.getText();
+
+//                playerName3 = player3.getText();
+
+//                playerName4 = player4.getText();
+
+ 
+
+                frame.remove(Start);
+
+                //Creates a new JFrame
+
+                //Adds the panels to the frame and sets the size of the frame
+
+                // frame.add(RefreshPanel2(null));
+
+                frame.add(RefreshPanel1());
+
+                frame.setSize(1250, 1025);
+
+                //Sets the default operation of the frame and set it to be visible to the user
+
+ 
+
+                frame.setResizable(false);
+
+                frame.setVisible(true);
+
+                frame.setLocationRelativeTo(null);
+
+ 
+
+                //  NewTurn();
+
+            }
+
+        });
+
+ 
+
+//       
+
+//        //Creates a new JFrame
+
+//        //Adds the panels to the frame and sets the size of the frame
+
+//        frame.add(RefreshPanel1());
+
+//        frame.setSize(1250, 1025);
+
+//        //Sets the default operation of the frame and set it to be visible to the user
+
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+//        frame.setResizable(false);
+
+//        frame.setVisible(true);
+
+//        frame.setLocationRelativeTo(null);
+
+//        //RefreshFrame();
+
+//        //nested for loops assign the selected values of the
+
+//        //array the different terrain types available
+
+//       
+
     }
     /**
      * @param args the command line arguments
