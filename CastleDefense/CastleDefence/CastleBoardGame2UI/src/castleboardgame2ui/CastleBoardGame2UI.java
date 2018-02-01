@@ -40,7 +40,7 @@ public class CastleBoardGame2UI {
     //ANIMATION VALUES
     int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
-    boolean[] done = new boolean[10]; //Player cannot move after combat or climbing
+    boolean[] done = new boolean[20]; //Player cannot move after combat or climbing
     int blueScore = 0;
     int diceRoll = 1;
     int moving = 1;
@@ -137,6 +137,18 @@ frame.setLocationRelativeTo(null);
         frame.validate();
     }
     public JPanel RefreshPanel1() {
+        try
+        {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(CastleBoardGame2UI.class .getResourceAsStream("/Resources/BattleMusic.wav"));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+        catch(Exception e)
+        {
+            
+        }
         for(int i = 0; i < 20; i++){
             for(int j = 0; j < 19; j++){
                 grid[i][j] = new Terrain();
@@ -356,6 +368,7 @@ frame.setLocationRelativeTo(null);
                         {
 //                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
                             int diceOutput = rollDice(dice);
+                            done[moving] = true;
                             int rollTarget = (int) Math.floor((50 + grid[newX][newY].defendingBonus - grid[x][y].attackingBonus) / 17);
                             groundInfo.setText("<html><body style='width: 120px'>Summary\nYour ground: " + grid[x][y].terrainType + ", your attack bonus: " + grid[x][y].attackingBonus + "; their ground: " + grid[newX][newY].terrainType + ", their defending bonus: " + grid[newX][newY].defendingBonus + "; need a " + rollTarget + " to take the piece. (rolled a " + diceOutput + ")");
 //                            System.out.println("Collision with enemy!");
@@ -369,7 +382,11 @@ frame.setLocationRelativeTo(null);
                                 int cTargetY = (1 - grid[newX][newY].teamOccupying) * 50 * 50;
                                 MovementAnimation.newAnimation(anim, findCounterByLocation(newX, newY, pieces), cTargetX-cX, cTargetY-cY, 3000);
                                 grid[newX][newY].teamOccupying = -1;
-                                done[moving] = true;
+                                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/hit.wav"));
+                            }
+                            else
+                            {
+                                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/miss.wav"));
                             }
                             haveGo(team, turnIndicator, scoreIndicator, victoryMessage, fog);
                             okToMove = false;
@@ -383,16 +400,21 @@ frame.setLocationRelativeTo(null);
                         //Move the piece
                         if(okToMove)
                         {
-                            HandleSound(CastleBoardGame2UI.class .getResourceAsStream("march.wav"));
+//                            System.out.println("Moving from: " + x + ", " + y + " to " + newX + ", " + newY);
+//                            System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
+                            if(!grid[x][y].terrainType.equals("wall") && grid[newX][newY].terrainType.equals("wall"))
+                            {
+                                done[moving] = true;
+                                System.out.println("piece done moving");
+                            }
+                            HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/marchShort.wav"));
                             grid[x][y].teamOccupying = -1;
                             grid[newX][newY].teamOccupying = team;
                             //MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, moveSpeed);
                             MovementAnimation.newAnimation(anim, target, 50 * (newX - x), 50 * (newY - y), moveSpeed);
                             haveGo(team, turnIndicator, scoreIndicator, victoryMessage, fog);
-                            if(!grid[x][y].terrainType.equals("wall") && grid[newX][newY].terrainType.equals("wall"))
-                            {
-                                done[moving] = true;
-                            }
+                            
+                            
                         }
                     }
                 }
@@ -490,9 +512,11 @@ frame.setLocationRelativeTo(null);
                     if (diceInt > 2) {
                         //Grass color
                         stone[i].setIcon(grassImage);
+                        grid[i][j] = new Terrain("grass");
                     } else {
                         //dirt color
                         stone[i].setIcon(dirtImage);
+                        grid[i][j] = new Terrain("hill");
                     }
                 }
                 stone[i].setLocation(j * 50, i * 50);
@@ -569,9 +593,9 @@ frame.setLocationRelativeTo(null);
         {
             numberOfMoves[team] = 5;
             currentTeam = 1 - currentTeam;
-            for(boolean value : done)
+            for(int i = 0; i < 20; i++)
             {
-                value = true;
+                done[i] = false;
             }
             if(currentTeam == 0)
             {
