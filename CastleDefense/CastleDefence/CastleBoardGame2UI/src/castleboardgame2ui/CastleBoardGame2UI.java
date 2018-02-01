@@ -41,8 +41,7 @@ public class CastleBoardGame2UI {
     //ANIMATION VALUES
     int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
-    
-    boolean[] done = new boolean[10];
+    boolean[] done = new boolean[10]; //Player cannot move after combat or climbing
     int blueScore = 0;
     int diceRoll = 1;
     int moving = 1;
@@ -61,177 +60,75 @@ public class CastleBoardGame2UI {
     String[] arrows = {"NorthWest.png", "North.png", "NorthEast.png", "West.png", "East.png", "SouthWest.png", "South.png", "SouthEast.png"};
     
     public CastleBoardGame2UI() {
-
- 
-
         //Sets the look of the UI to the deafult Windows 10 look depends on the OS of the system running the program
-
         try {
-
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-        } catch (Exception e) {
-
-        }
-
+        } catch (Exception e) {}
         //closes program when you close the JFRAME
-
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
- 
-
         JPanel Start = new JPanel();
-
 //        JLabel greet = new JLabel("How many players are there ?");
-
         JLabel player1Label = new JLabel("Enter Team 1's name");
-
         JLabel player2Label = new JLabel("Enter Team 2's name");
-
 //        JLabel player3Label = new JLabel("Enter player 3's name");
-
 //        JLabel player4Label = new JLabel("Enter player 4's name");
-
 //        String[] players = { "2", "4"};
-
         JButton proccede = new JButton("Continue");
-
         JTextField player1 = new JTextField();
-
         JTextField player2 = new JTextField();
-
 //        JTextField player3 = new JTextField();
-
 //        JTextField player4 = new JTextField();
-
- 
-
         Start.setLayout(new BoxLayout(Start, BoxLayout.PAGE_AXIS));
-
- 
-
 //        JComboBox playerNumbers = new JComboBox(players);
-
-//
-
 //        Start.add(greet);
-
 //        Start.add(playerNumbers);
-
         Start.add(player1Label);
-
         Start.add(player1);
-
         Start.add(player2Label);
-
         Start.add(player2);
-
 //        Start.add(player3Label);
-
 //        Start.add(player3);
-
 ////        Start.add(player4Label);
-
 //        Start.add(player4);
-
         Start.add(proccede);
-
- 
-
-        frame.add(Start);
-
+         frame.add(Start);
         frame.setVisible(true);
-
         frame.setSize(500, 500);
-
- 
-
         proccede.addActionListener(new ActionListener() {
-
- 
-
             @Override
-
             public void actionPerformed(ActionEvent ae) {
-
- 
-
                 playerName1 = player1.getText();
-
                 if(playerName1 == ""){
-
                 playerName1 = "Blue";
-
                 }
-
                 playerName2 = player2.getText();
-
 //                playerName3 = player3.getText();
-
 //                playerName4 = player4.getText();
-
- 
-
                 frame.remove(Start);
-
                 //Creates a new JFrame
-
                 //Adds the panels to the frame and sets the size of the frame
-
                 // frame.add(RefreshPanel2(null));
-
                 frame.add(RefreshPanel1());
-
                 frame.setSize(1250, 1025);
-
                 //Sets the default operation of the frame and set it to be visible to the user
-
- 
-
                 frame.setResizable(false);
-
                 frame.setVisible(true);
-
                 frame.setLocationRelativeTo(null);
-
- 
-
                 //  NewTurn();
-
             }
-
         });
-
- 
-
-//       
-
 //        //Creates a new JFrame
-
 //        //Adds the panels to the frame and sets the size of the frame
-
 //        frame.add(RefreshPanel1());
-
 //        frame.setSize(1250, 1025);
-
 //        //Sets the default operation of the frame and set it to be visible to the user
-
 //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 //        frame.setResizable(false);
-
 //        frame.setVisible(true);
-
 //        frame.setLocationRelativeTo(null);
-
 //        //RefreshFrame();
-
 //        //nested for loops assign the selected values of the
-
 //        //array the different terrain types available
-
-//       
-
     }
     /**
      * @param args the command line arguments
@@ -272,7 +169,6 @@ public class CastleBoardGame2UI {
         JLabel victoryMessage = new JLabel();
         victoryMessage.setLocation(175, -250);
         victoryMessage.setSize(750, 250);
-        
 //        Button Dice = new Button("Roll the dice");
 //        Dice.setLocation(1075, 25);
 //        Dice.setSize(150, 50);
@@ -336,12 +232,9 @@ public class CastleBoardGame2UI {
         panel.add(concealer1);
         panel.add(concealer2);
         panel.add(dice);
-        
-        
-        
         //Creates the variables needed 
-        JLabel dirt = new JLabel("");
-        JLabel grass = new JLabel("");
+//        JLabel dirt = new JLabel("");
+//        JLabel grass = new JLabel("");
         JLabel[] stone = new JLabel[100];
         int boardWidth = 21;
         int boardHeight = 20;
@@ -471,11 +364,9 @@ public class CastleBoardGame2UI {
 //                        System.out.println("To " + newX * 50 + ", " + newY * 50 + ": " + grid[newX][newY].teamOccupying);
                         if(grid[newX][newY].teamOccupying == 1 - team)
                         {
-                            
 //                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
                             int diceOutput = rollDice(dice);
                             int rollTarget = (int) Math.floor((50 + grid[newX][newY].defendingBonus - grid[x][y].attackingBonus) / 17);
-
                             groundInfo.setText("<html><body style='width: 120px'>Summary\nYour ground: " + grid[x][y].terrainType + ", your attack bonus: " + grid[x][y].attackingBonus + "; their ground: " + grid[newX][newY].terrainType + ", their defending bonus: " + grid[newX][newY].defendingBonus + "; need a " + rollTarget + " to take the piece. (rolled a " + diceOutput + ")");
 //                            System.out.println("Collision with enemy!");
 //                            System.out.println("Rolled a " + diceOutput + ", needed a " + rollTarget + " to take the piece.");
@@ -730,10 +621,7 @@ public class CastleBoardGame2UI {
                     deltaScore += grid[x][y].attackingBonus;
                     deltaScore += grid[x][y].defendingBonus;
                 }
-                catch(Exception e)
-                {
-                    
-                }
+                catch(Exception e){}
             }
         }
         blueScore += deltaScore;
