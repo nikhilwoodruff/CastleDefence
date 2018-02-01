@@ -401,11 +401,10 @@ frame.setLocationRelativeTo(null);
                         if(okToMove)
                         {
 //                            System.out.println("Moving from: " + x + ", " + y + " to " + newX + ", " + newY);
-//                            System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
+                            System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
                             if(!grid[x][y].terrainType.equals("wall") && grid[newX][newY].terrainType.equals("wall"))
                             {
                                 done[moving] = true;
-                                System.out.println("piece done moving");
                             }
                             HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/marchShort.wav"));
                             grid[x][y].teamOccupying = -1;
@@ -468,7 +467,7 @@ frame.setLocationRelativeTo(null);
                     if ((j == 5) || (j == 15)) {
                         //Stone color
                         stone[i].setIcon(stoneImage);
-                        grid[i][j] = new Terrain("stone");
+                        grid[i][j] = new Terrain("wall");
                     } else {
                         Integer diceInt;
                         Random rand = new Random();
@@ -502,7 +501,7 @@ frame.setLocationRelativeTo(null);
                         if ((i == 9 || i == 10) && j == 10) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[i][j] = new Terrain("wood");
+                            grid[i][j] = new Terrain("stone");
                         }
                     }
                 } else {
