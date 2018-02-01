@@ -56,6 +56,7 @@ public class CastleBoardGame2UI {
     Terrain[][] grid = new Terrain[22][21];
     String playerName1;
     String playerName2;
+    int numberOfReinforcements = 0;
     
     public CastleBoardGame2UI() {
 
@@ -290,6 +291,20 @@ public class CastleBoardGame2UI {
         JLabel groundInfo = new JLabel();
         groundInfo.setLocation(1075, 350);
         groundInfo.setSize(150, 500);
+        Button spawnPlayer = new Button("Spawn reinforcements");
+        spawnPlayer.setLocation(1075, 400);
+        spawnPlayer.setSize(150, 50);
+        spawnPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {        
+                if(numberOfReinforcements < 4.)
+                {
+                    MovementAnimation.newAnimation(anim, pieces.get(11+2*numberOfReinforcements), 0, -600, 1000);
+                    grid[10][13].teamOccupying = 0;
+                    numberOfReinforcements++;
+                }
+            }
+        });
         Button doNothing = new Button("Do nothing");
         doNothing.setLocation(1075, 200);
         doNothing.setSize(150, 50);
@@ -309,6 +324,7 @@ public class CastleBoardGame2UI {
         concealer2.setLocation(1100, 0);
         concealer2.setIcon(readImage("grey.png", 50, 100));
 //        panel.add(Dice);
+        panel.add(spawnPlayer);
         panel.add(turnIndicator);
         panel.add(victoryMessage);
         panel.add(fog);
@@ -364,6 +380,21 @@ public class CastleBoardGame2UI {
             pieces.get(pieces.size() - 1).setLocation(50 * (i+7), 50 * 9);
             pieces.get(pieces.size() - 1).setSize(50, 50);
             grid[i+7][9].teamOccupying = 0;
+        }
+        for(int i = 0; i < 5; i++)
+        {
+            pieces.add(new JLabel());
+            pieces.get(pieces.size() - 1).setVisible(true);
+            pieces.get(pieces.size() - 1).setIcon(CounterImage);
+            pieces.get(pieces.size() - 1).setLocation(500, 1250);
+            pieces.get(pieces.size() - 1).setSize(50, 50);
+            //grid[i][0].teamOccupying = 1;
+            pieces.add(new JLabel());
+            pieces.get(pieces.size() - 1).setVisible(true);
+            pieces.get(pieces.size() - 1).setIcon(CounterImage2);
+            pieces.get(pieces.size() - 1).setLocation(500, 1250);
+            pieces.get(pieces.size() - 1).setSize(50, 50);
+            //grid[i+7][9].teamOccupying = 0;
         }
         //Give the pieces behaviour (this is a long one)
         int count1 = 0;
