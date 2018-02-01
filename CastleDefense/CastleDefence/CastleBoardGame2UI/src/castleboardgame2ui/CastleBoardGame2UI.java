@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -94,28 +93,25 @@ public class CastleBoardGame2UI {
          frame.add(Start);
         frame.setVisible(true);
         frame.setSize(500, 500);
-        proccede.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                playerName1 = player1.getText();
-                if(playerName1 == ""){
+        proccede.addActionListener((ActionEvent ae) -> {
+            playerName1 = player1.getText();
+            if("".equals(playerName1)){
                 playerName1 = "Blue";
-                }
-                playerName2 = player2.getText();
+            }
+            playerName2 = player2.getText();
 //                playerName3 = player3.getText();
 //                playerName4 = player4.getText();
-                frame.remove(Start);
-                //Creates a new JFrame
-                //Adds the panels to the frame and sets the size of the frame
-                // frame.add(RefreshPanel2(null));
-                frame.add(RefreshPanel1());
-                frame.setSize(1250, 1025);
-                //Sets the default operation of the frame and set it to be visible to the user
-                frame.setResizable(false);
-                frame.setVisible(true);
-                frame.setLocationRelativeTo(null);
-                //  NewTurn();
-            }
+frame.remove(Start);
+//Creates a new JFrame
+//Adds the panels to the frame and sets the size of the frame
+// frame.add(RefreshPanel2(null));
+frame.add(RefreshPanel1());
+frame.setSize(1250, 1025);
+//Sets the default operation of the frame and set it to be visible to the user
+frame.setResizable(false);
+frame.setVisible(true);
+frame.setLocationRelativeTo(null);
+//  NewTurn();
         });
 //        //Creates a new JFrame
 //        //Adds the panels to the frame and sets the size of the frame
@@ -192,26 +188,20 @@ public class CastleBoardGame2UI {
         Button spawnPlayer = new Button("Spawn reinforcements");
         spawnPlayer.setLocation(1075, 400);
         spawnPlayer.setSize(150, 50);
-        spawnPlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {        
-                if(numberOfReinforcements < 4 && blueScore > 1000 * Math.pow(2, numberOfReinforcements + 1) && currentTeam == 0)
-                {
-                    MovementAnimation.newAnimation(anim, pieces.get(11+2*numberOfReinforcements), 0, -600, 1000);
-                    grid[10][13].teamOccupying = 0;
-                    numberOfReinforcements++;
-                }
+        spawnPlayer.addActionListener((ActionEvent ae) -> {
+            if(numberOfReinforcements < 4 && blueScore > 1000 * Math.pow(2, numberOfReinforcements + 1) && currentTeam == 0)
+            {
+                MovementAnimation.newAnimation(anim, pieces.get(11+2*numberOfReinforcements), 0, -600, 1000);
+                grid[10][13].teamOccupying = 0;
+                numberOfReinforcements++;
             }
         });
         Button doNothing = new Button("Do nothing");
         doNothing.setLocation(1075, 200);
         doNothing.setSize(150, 50);
-        doNothing.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {                    
-                int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
-                haveGo(team, turnIndicator, scoreIndicator, victoryMessage, fog);
-            }
+        doNothing.addActionListener((ActionEvent ae) -> {
+            int team = (pieces.indexOf(pieces.get(moving)) % 2 == 0) ? 1 : 0;
+            haveGo(team, turnIndicator, scoreIndicator, victoryMessage, fog);
         });
         JLabel concealer1 = new JLabel();
         concealer1.setSize(50, 869);
@@ -458,7 +448,7 @@ public class CastleBoardGame2UI {
                         stone[i].setIcon(stoneImage);
                         grid[i][j] = new Terrain("stone");
                     } else {
-                        Integer diceInt = 0;
+                        Integer diceInt;
                         Random rand = new Random();
                         diceInt = rand.nextInt(10) + 1;
                         if (diceInt > 2) {
@@ -592,7 +582,7 @@ public class CastleBoardGame2UI {
                 MovementAnimation.newAnimation(anim, fog, 0, 1100, 1000);
             }
         }
-        String teamName = "";
+        String teamName;
         if(currentTeam == 1)
         {
             teamName = "reds";
