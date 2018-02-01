@@ -468,7 +468,7 @@ frame.setLocationRelativeTo(null);
                     if ((j == 5) || (j == 15)) {
                         //Stone color
                         stone[i].setIcon(stoneImage);
-                        grid[i][j] = new Terrain("wall");
+                        grid[j][i] = new Terrain("wall");
                     } else {
                         Integer diceInt;
                         Random rand = new Random();
@@ -476,33 +476,33 @@ frame.setLocationRelativeTo(null);
                         if (diceInt > 2) {
                             //Grass color
                             stone[i].setIcon(grassImage);
-                            grid[i][j] = new Terrain("grass");
+                            grid[j][i] = new Terrain("grass");
                         } else {
                             //Dirt color
                             stone[i].setIcon(dirtImage);
-                            grid[i][j] = new Terrain("hill");
+                            grid[j][i] = new Terrain("hill");
                         }
                         if ((i >= 5 && i < 15) && j >= 6 && j < 15) {
                             //Castle color
                             stone[i].setIcon(InteriorImage);
-                            grid[i][j] = new Terrain("wood");
+                            grid[j][i] = new Terrain("wood");
                         }
                         //Sets the color of the walls
                         if (i == 5 && j < 15 && j >= 5) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[i][j] = new Terrain("wall");
+                            grid[j][i] = new Terrain("wall");
                         }
                         if (i == 14 && j < 15 && j >= 5) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[i][j] = new Terrain("wall");
+                            grid[j][i] = new Terrain("wall");
                         }
                         //Sets the color of the keep
                         if ((i == 9 || i == 10) && j == 10) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[i][j] = new Terrain("stone");
+                            grid[j][i] = new Terrain("stone");
                         }
                     }
                 } else {
@@ -512,11 +512,11 @@ frame.setLocationRelativeTo(null);
                     if (diceInt > 2) {
                         //Grass color
                         stone[i].setIcon(grassImage);
-                        grid[i][j] = new Terrain("grass");
+                        grid[j][i] = new Terrain("grass");
                     } else {
                         //dirt color
                         stone[i].setIcon(dirtImage);
-                        grid[i][j] = new Terrain("hill");
+                        grid[j][i] = new Terrain("hill");
                     }
                 }
                 stone[i].setLocation(j * 50, i * 50);
