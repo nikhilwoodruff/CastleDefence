@@ -297,7 +297,7 @@ public class CastleBoardGame2UI {
         spawnPlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {        
-                if(numberOfReinforcements < 4)
+                if(numberOfReinforcements < 4 && blueScore > 1000 * Math.pow(2, numberOfReinforcements + 1) && currentTeam == 0)
                 {
                     MovementAnimation.newAnimation(anim, pieces.get(11+2*numberOfReinforcements), 0, -600, 1000);
                     grid[10][13].teamOccupying = 0;
@@ -352,8 +352,8 @@ public class CastleBoardGame2UI {
         //Loads castle interior iamge
         ImageIcon InteriorImage = readImage("InternalTexture.jpg", 50, 50);
         //Loads counter images
-        ImageIcon CounterImage = readImage("red.png", 50, 50);
-        ImageIcon CounterImage2 = readImage("blue.png", 50, 50);
+        ImageIcon CounterImage = readImage("Attacker.png", 50, 50);
+        ImageIcon CounterImage2 = readImage("Defender.png", 50, 50);
         //Loads highlighter image
         ImageIcon HighlightImage = readImage("highlight.png", 50, 50);
         //Create highlighters
@@ -500,6 +500,7 @@ public class CastleBoardGame2UI {
                         //Move the piece
                         if(okToMove)
                         {
+                            HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/march.wav"));
                             grid[x][y].teamOccupying = -1;
                             grid[newX][newY].teamOccupying = team;
                             //MovementAnimation.newAnimation(anim, target, -directions[countFinal][0] * 50, -directions[countFinal][1] * 50, moveSpeed);
