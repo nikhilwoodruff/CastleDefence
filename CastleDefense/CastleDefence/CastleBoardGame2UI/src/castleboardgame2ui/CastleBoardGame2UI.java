@@ -58,6 +58,7 @@ public class CastleBoardGame2UI {
     String playerName1;
     String playerName2;
     int numberOfReinforcements = 0;
+    String[] arrows = {"NorthWest.png", "North.png", "NorthEast.png", "West.png", "East.png", "SouthWest.png", "South.png", "SouthEast.png"};
     
     public CastleBoardGame2UI() {
 
@@ -362,7 +363,7 @@ public class CastleBoardGame2UI {
         {
             highlighters.add(new JLabel());
             highlighters.get(highlighters.size() - 1).setVisible(true);
-            highlighters.get(highlighters.size() - 1).setIcon(HighlightImage);
+            highlighters.get(highlighters.size() - 1).setIcon(readImage(arrows[j], 50, 50));
             highlighters.get(highlighters.size() - 1).setLocation(50 * (j+1), 250);
             highlighters.get(highlighters.size() - 1).setSize(50, 50);
         }
