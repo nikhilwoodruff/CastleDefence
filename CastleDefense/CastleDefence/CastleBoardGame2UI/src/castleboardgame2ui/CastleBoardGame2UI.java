@@ -36,11 +36,11 @@ import javax.swing.UIManager;
  */
 public class CastleBoardGame2UI {
     
-    
+    int[][] blueStart = {{5, 5}, {15, 5}, {9, 5}, {11, 5}, {5, 14}, {15, 14}, {9, 11}, {11, 11}};
     //ANIMATION VALUES
     int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
-    boolean[] done = new boolean[20]; //Player cannot move after combat or climbing
+    boolean[] done = new boolean[40]; //Player cannot move after combat or climbing
     int blueScore = 0;
     int diceRoll = 1;
     int moving = 1;
@@ -56,7 +56,8 @@ public class CastleBoardGame2UI {
     String playerName1;
     String playerName2;
     int numberOfReinforcements = 0;
-    String[] arrows = {"NorthWest.png", "North.png", "NorthEast.png", "West.png", "East.png", "SouthWest.png", "South.png", "SouthEast.png"};
+    String[] arrows = {"NorthWest.png", "North.png", "NorthEast.png", "West.png", "East.png", "SouthWest.png", "West.png", "SouthWest.png"};
+    
     
     public CastleBoardGame2UI() {
         //Sets the look of the UI to the deafult Windows 10 look depends on the OS of the system running the program
@@ -201,12 +202,11 @@ frame.setLocationRelativeTo(null);
         spawnPlayer.setLocation(1075, 400);
         spawnPlayer.setSize(150, 50);
         spawnPlayer.addActionListener((ActionEvent ae) -> {
-            if(numberOfReinforcements < 4 && blueScore > 1000 * Math.pow(2, numberOfReinforcements + 1) && currentTeam == 0)
+            if(numberOfReinforcements < 9 && blueScore > 1000 * Math.pow(2, numberOfReinforcements + 1) && currentTeam == 0)
             {
-                MovementAnimation.newAnimation(anim, pieces.get(11+2*numberOfReinforcements), 0, -600, 1000);
+                MovementAnimation.newAnimation(anim, pieces.get(25+2*numberOfReinforcements), 0, -600, 1000);
                 grid[10][13].teamOccupying = 0;
                 numberOfReinforcements++;
-                HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/coins.wav"));
             }
         });
         Button doNothing = new Button("Do nothing");
@@ -252,8 +252,6 @@ frame.setLocationRelativeTo(null);
         //Loads counter images
         ImageIcon CounterImage = readImage("Attacker.png", 50, 50);
         ImageIcon CounterImage2 = readImage("Defender.png", 50, 50);
-        //Loads highlighter image
-        ImageIcon HighlightImage = readImage("highlight.png", 50, 50);
         //Create highlighters
         for(int j = 0; j < 8; j++)
         {
@@ -264,22 +262,34 @@ frame.setLocationRelativeTo(null);
             highlighters.get(highlighters.size() - 1).setSize(50, 50);
         }
         //Create pieces
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 12; i++)
         {
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
             pieces.get(pieces.size() - 1).setIcon(CounterImage);
-            pieces.get(pieces.size() - 1).setLocation(50 * (i), 0);
+            pieces.get(pieces.size() - 1).setLocation(50 * (i + 4), 0);
             pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i][0].teamOccupying = 1;
-            pieces.add(new JLabel());
-            pieces.get(pieces.size() - 1).setVisible(true);
-            pieces.get(pieces.size() - 1).setIcon(CounterImage2);
-            pieces.get(pieces.size() - 1).setLocation(50 * (i+7), 50 * 9);
-            pieces.get(pieces.size() - 1).setSize(50, 50);
-            grid[i+7][9].teamOccupying = 0;
+            grid[i + 4][0].teamOccupying = 1;
+            if(i >= 8)
+            {
+                pieces.add(new JLabel());
+                pieces.get(pieces.size() - 1).setVisible(true);
+                pieces.get(pieces.size() - 1).setIcon(CounterImage2);
+                pieces.get(pieces.size() - 1).setLocation(200, 1400);
+                pieces.get(pieces.size() - 1).setSize(50, 50);
+                grid[i+7][9].teamOccupying = 0;
+            }
+            else
+            {
+                pieces.add(new JLabel());
+                pieces.get(pieces.size() - 1).setVisible(true);
+                pieces.get(pieces.size() - 1).setIcon(CounterImage2);
+                pieces.get(pieces.size() - 1).setLocation(50 * blueStart[i][0], 50 * blueStart[i][1]);
+                pieces.get(pieces.size() - 1).setSize(50, 50);
+                grid[blueStart[i][0]][blueStart[i][1]].teamOccupying = 0;
+            }
         }
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 8; i++)
         {
             pieces.add(new JLabel());
             pieces.get(pieces.size() - 1).setVisible(true);
@@ -381,6 +391,25 @@ frame.setLocationRelativeTo(null);
                                 int cY = findCounterByLocation(newX, newY, pieces).getLocation().y;
                                 int cTargetX = (1 - grid[newX][newY].teamOccupying) * 11 * 50;
                                 int cTargetY = (1 - grid[newX][newY].teamOccupying) * 50 * 50;
+                                if(cTargetX == 0 && cTargetX == 0)
+                                {
+                                    int rand = (int) Math.floor(Math.random() * 4);
+                                    switch(rand)
+                                    {
+                                        case 0:
+                                            break;
+                                        case 1:
+                                            cTargetX = 20*50;
+                                            break;
+                                        case 2:
+                                            cTargetY = 19*50;
+                                            break;
+                                        case 3:
+                                            cTargetX = 20*50;
+                                            cTargetY = 19*50;
+                                            break;
+                                    }
+                                }
                                 MovementAnimation.newAnimation(anim, findCounterByLocation(newX, newY, pieces), cTargetX-cX, cTargetY-cY, 3000);
                                 grid[newX][newY].teamOccupying = -1;
                                 HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/hit.wav"));
@@ -402,10 +431,11 @@ frame.setLocationRelativeTo(null);
                         if(okToMove)
                         {
 //                            System.out.println("Moving from: " + x + ", " + y + " to " + newX + ", " + newY);
-//                            System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
+                            System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
                             if(!grid[x][y].terrainType.equals("wall") && grid[newX][newY].terrainType.equals("wall"))
                             {
                                 done[moving] = true;
+                                System.out.println("piece done moving");
                             }
                             HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/marchShort.wav"));
                             grid[x][y].teamOccupying = -1;
@@ -468,7 +498,7 @@ frame.setLocationRelativeTo(null);
                     if ((j == 5) || (j == 15)) {
                         //Stone color
                         stone[i].setIcon(stoneImage);
-                        grid[j][i] = new Terrain("wall");
+                        grid[i][j] = new Terrain("wall");
                     } else {
                         Integer diceInt;
                         Random rand = new Random();
@@ -476,33 +506,33 @@ frame.setLocationRelativeTo(null);
                         if (diceInt > 2) {
                             //Grass color
                             stone[i].setIcon(grassImage);
-                            grid[j][i] = new Terrain("grass");
+                            grid[i][j] = new Terrain("grass");
                         } else {
                             //Dirt color
                             stone[i].setIcon(dirtImage);
-                            grid[j][i] = new Terrain("hill");
+                            grid[i][j] = new Terrain("hill");
                         }
                         if ((i >= 5 && i < 15) && j >= 6 && j < 15) {
                             //Castle color
                             stone[i].setIcon(InteriorImage);
-                            grid[j][i] = new Terrain("wood");
+                            grid[i][j] = new Terrain("wood");
                         }
                         //Sets the color of the walls
                         if (i == 5 && j < 15 && j >= 5) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[j][i] = new Terrain("wall");
+                            grid[i][j] = new Terrain("wall");
                         }
                         if (i == 14 && j < 15 && j >= 5) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[j][i] = new Terrain("wall");
+                            grid[i][j] = new Terrain("wall");
                         }
                         //Sets the color of the keep
                         if ((i == 9 || i == 10) && j == 10) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[j][i] = new Terrain("stone");
+                            grid[i][j] = new Terrain("wood");
                         }
                     }
                 } else {
@@ -512,11 +542,11 @@ frame.setLocationRelativeTo(null);
                     if (diceInt > 2) {
                         //Grass color
                         stone[i].setIcon(grassImage);
-                        grid[j][i] = new Terrain("grass");
+                        grid[i][j] = new Terrain("grass");
                     } else {
                         //dirt color
                         stone[i].setIcon(dirtImage);
-                        grid[j][i] = new Terrain("hill");
+                        grid[i][j] = new Terrain("hill");
                     }
                 }
                 stone[i].setLocation(j * 50, i * 50);
@@ -579,6 +609,7 @@ frame.setLocationRelativeTo(null);
         //File must be in /Resources/!
         BufferedImage image = null;    
         try {
+            System.out.println(fileName);
             image = ImageIO.read((CastleBoardGame2UI.class.getResourceAsStream("/Resources/" + fileName)));
         } catch (Exception e) {
             System.out.println(e);
