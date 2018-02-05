@@ -35,7 +35,6 @@ import javax.swing.UIManager;
  * @author 12lstephens
  */
 public class CastleBoardGame2UI {
-    
     int[][] blueStart = {{5, 5}, {15, 5}, {9, 5}, {11, 5}, {5, 14}, {15, 14}, {9, 11}, {11, 11}};
     //ANIMATION VALUES
     int moveSpeed = 500; //Time in ms for piece to move
@@ -97,11 +96,12 @@ public class CastleBoardGame2UI {
         proccede.addActionListener((ActionEvent ae) -> {
             playerName1 = player1.getText();
             if("".equals(playerName1)){
-                playerName1 = "Blue";
+                playerName1 = "Blues";
             }
             playerName2 = player2.getText();
-//                playerName3 = player3.getText();
-//                playerName4 = player4.getText();
+            if("".equals(playerName2)){
+                playerName2 = "Reds";
+            }
 frame.remove(Start);
 //Creates a new JFrame
 //Adds the panels to the frame and sets the size of the frame
@@ -647,11 +647,11 @@ frame.setLocationRelativeTo(null);
         String teamName;
         if(currentTeam == 1)
         {
-            teamName = "reds";
+            teamName = playerName2;
         }
         else
         {
-            teamName = "blues";
+            teamName = playerName1;
         }
         turnIndicator.setText("<html><body style='width: 120px'>Current team: " + teamName + ", number of moves left: " + numberOfMoves[team]);
         //Victory check
@@ -677,10 +677,10 @@ frame.setLocationRelativeTo(null);
             }
         }
         blueScore += deltaScore;
-        scoreIndicator.setText("Blue score: " + blueScore);
+        scoreIndicator.setText(playerName1 + " score: " + blueScore);
         if(blueScore > 1000000)
         {
-            System.out.println("VICTORY FOR BLUES!");
+            System.out.println("VICTORY FOR " + playerName1 + "!");
             victoryMessage.setIcon(readImage("VictoryGraphicBlue.png", 750, 250));
             MovementAnimation.newAnimation(anim, victoryMessage, 0, 600, 1000);
         }
