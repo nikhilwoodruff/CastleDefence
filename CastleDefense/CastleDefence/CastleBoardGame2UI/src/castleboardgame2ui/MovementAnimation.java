@@ -18,14 +18,12 @@ import javax.swing.JLabel;
  */
 public class MovementAnimation 
 {
-    
     //Movement animation:
     //To use in a JFrame Panel (with null layout): define two ArrayLists of type MovementAnimation; one to store global animations, the other 
     //as the bin for completed animations. Then, call enableAnimation and pass in the ArrayLists.
     //To add/trigger an animation: call newAnimation and pass in the animation ArrayList, the jLabel to animate (currently only jLabels are 
     //supported), the number of pixels right, the number of pixels down (to invert, just invert parameter 'int dy' below), and the duration of
     //the animation in milliseconds.
-    
     JLabel image;
     long startTime;
     long duration;
@@ -45,7 +43,6 @@ public class MovementAnimation
             }
         }, 0, 1, TimeUnit.MILLISECONDS);
     }
-    
     MovementAnimation(JLabel newImage, long newDuration, int dx, int dy)
     {
         image = newImage;
@@ -55,7 +52,6 @@ public class MovementAnimation
         startPos = newImage.getLocation();
         targetPos = new Point(startPos.x + dx, startPos.y + dy);
     }
-    
     private static void animateAll(ArrayList<MovementAnimation> anim, ArrayList<MovementAnimation> toRemove)
     {
         for(MovementAnimation animation : anim)
@@ -85,17 +81,16 @@ public class MovementAnimation
                         animation.image.setLocation(new Point(getPercentile(percentile * 100, animation.startPos.x, animation.targetPos.x), getPercentile(percentile * 100, animation.startPos.y, animation.targetPos.y)));
                         toRemove.add(animation);
                     }
-                    if(percentile > 1)
-                    {
-                        percentile = 1;
-                        animation.image.setLocation(new Point(getPercentile(percentile * 100, animation.startPos.x, animation.targetPos.x), getPercentile(percentile * 100, animation.startPos.y, animation.targetPos.y)));
-                        toRemove.add(animation);
-                    }
+//                    if(percentile > 1)
+//                    {
+//                        percentile = 1;
+//                        animation.image.setLocation(new Point(getPercentile(percentile * 100, animation.startPos.x, animation.targetPos.x), getPercentile(percentile * 100, animation.startPos.y, animation.targetPos.y)));
+//                        toRemove.add(animation);
+//                    }
                 }
                 anim.removeAll(toRemove);
                 toRemove.clear();
     }
-    
     static void newAnimation(ArrayList<MovementAnimation> animList, JLabel image, int dx, int dy, int duration)
     {
         int resultOfQuery = MovementAnimation.queued(animList, image);
@@ -109,7 +104,6 @@ public class MovementAnimation
             animList.clear();
         }
     }
-    
     private static int queued(ArrayList<MovementAnimation> list, JLabel image)
     {
         for(MovementAnimation anim : list)
@@ -121,36 +115,19 @@ public class MovementAnimation
         }
         return -1;
     }
-    
     private static int differenceBetween(int number1, int number2)
     {
         return (int) Math.abs(number1 - number2);
     }
-    
     private static int getPercentile(float percentile, int number1, int number2)
     {
         return number1 + (int) Math.floor(percentile * (number2 - number1) / 100);
     }
-    
     private static float cubicIn(float t) {
         return (float) Math.pow(t,3);
     }
-    
     private static float cubicInOut(float t) {
      if(t < 0.5) return cubicIn(t*2)/2f;
      return 1-cubicIn((1-t)*2)/2;                
-    }
-    
-    private static float clamp(float number, float min, float max)
-    {
-        if(number < min)
-        {
-            number = min;
-        }
-        if(number > max)
-        {
-            number = max;
-        }
-        return number;
     }
 }
