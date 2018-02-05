@@ -56,7 +56,7 @@ public class CastleBoardGame2UI {
     String playerName1;
     String playerName2;
     int numberOfReinforcements = 0;
-    String[] arrows = {"NorthWest.png", "North.png", "NorthEast.png", "West.png", "East.png", "SouthWest.png", "West.png", "SouthWest.png"};
+    String[] arrows = {"NorthWest.png", "North.png", "NorthEast.png", "West.png", "East.png", "SouthWest.png", "South.png", "SouthEast.png"};
     
     
     public CastleBoardGame2UI() {
@@ -286,7 +286,9 @@ frame.setLocationRelativeTo(null);
                 pieces.get(pieces.size() - 1).setIcon(CounterImage2);
                 pieces.get(pieces.size() - 1).setLocation(50 * blueStart[i][0], 50 * blueStart[i][1]);
                 pieces.get(pieces.size() - 1).setSize(50, 50);
+//                System.out.println(blueStart[i][0] + ", " + blueStart[i][1]);
                 grid[blueStart[i][0]][blueStart[i][1]].teamOccupying = 0;
+//                System.out.println(grid[blueStart[i][0]][blueStart[i][1]].teamOccupying);
             }
         }
         for(int i = 0; i < 8; i++)
@@ -377,7 +379,7 @@ frame.setLocationRelativeTo(null);
 //                        System.out.println("To " + newX * 50 + ", " + newY * 50 + ": " + grid[newX][newY].teamOccupying);
                         if(grid[newX][newY].teamOccupying == 1 - team)
                         {
-//                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
+                            
                             int diceOutput = rollDice(dice);
                             done[moving] = true;
                             int rollTarget = (int) Math.floor((50 + grid[newX][newY].defendingBonus - grid[x][y].attackingBonus) / 17);
@@ -430,12 +432,14 @@ frame.setLocationRelativeTo(null);
                         //Move the piece
                         if(okToMove)
                         {
+//                            System.out.println(grid[9][5].teamOccupying);
+//                            System.out.println(team + " : " + grid[newX][newY].teamOccupying);
 //                            System.out.println("Moving from: " + x + ", " + y + " to " + newX + ", " + newY);
-                            System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
+                            //System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
                             if(!grid[x][y].terrainType.equals("wall") && grid[newX][newY].terrainType.equals("wall"))
                             {
                                 done[moving] = true;
-                                System.out.println("piece done moving");
+                                //System.out.println("piece done moving");
                             }
                             HandleSound(CastleBoardGame2UI.class .getResourceAsStream("/Resources/marchShort.wav"));
                             grid[x][y].teamOccupying = -1;
@@ -557,6 +561,10 @@ frame.setLocationRelativeTo(null);
                 panel.add(stone[i]);
             }
         }
+        for(int[] startCoordinate : blueStart)
+        {
+            grid[startCoordinate[0]][startCoordinate[1]].teamOccupying = 0;
+        }
         //returns the panel
         return panel;
     }
@@ -609,7 +617,6 @@ frame.setLocationRelativeTo(null);
         //File must be in /Resources/!
         BufferedImage image = null;    
         try {
-            System.out.println(fileName);
             image = ImageIO.read((CastleBoardGame2UI.class.getResourceAsStream("/Resources/" + fileName)));
         } catch (Exception e) {
             System.out.println(e);
