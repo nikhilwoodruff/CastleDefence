@@ -56,8 +56,6 @@ public class CastleBoardGame2UI {
     String playerName2;
     int numberOfReinforcements = 0;
     String[] arrows = {"NorthWest.png", "North.png", "NorthEast.png", "West.png", "East.png", "SouthWest.png", "South.png", "SouthEast.png"};
-    
-    
     public CastleBoardGame2UI() {
         //Sets the look of the UI to the deafult Windows 10 look depends on the OS of the system running the program
         try {
@@ -678,7 +676,7 @@ frame.setLocationRelativeTo(null);
         }
         blueScore += deltaScore;
         scoreIndicator.setText(playerName1 + " score: " + blueScore);
-        if(blueScore > 1000000)
+        if(blueScore > 100000)
         {
             System.out.println("VICTORY FOR " + playerName1 + "!");
             victoryMessage.setIcon(readImage("VictoryGraphicBlue.png", 750, 250));
