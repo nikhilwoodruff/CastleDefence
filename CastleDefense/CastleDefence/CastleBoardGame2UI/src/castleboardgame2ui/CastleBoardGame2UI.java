@@ -37,7 +37,7 @@ import javax.swing.UIManager;
 public class CastleBoardGame2UI {
     int[][] blueStart = {{5, 5}, {15, 5}, {9, 5}, {11, 5}, {5, 14}, {15, 14}, {9, 11}, {11, 11}};
     //ANIMATION VALUES
-    int moveSpeed = 500; //Time in ms for piece to move
+    int moveSpeed = 1000; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
     boolean[] done = new boolean[40]; //Player cannot move after combat or climbing
     int blueScore = 0;
