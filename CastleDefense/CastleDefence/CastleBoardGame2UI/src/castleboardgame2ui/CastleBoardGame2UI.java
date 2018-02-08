@@ -432,9 +432,9 @@ public class CastleBoardGame2UI {
                             //System.out.println("Moving from: " + grid[x][y].terrainType + " to " + grid[newX][newY].terrainType);
                             if (!grid[x][y].terrainType.equals("wall") && grid[newX][newY].terrainType.equals("wall")) {
                                 done[moving] = true;
-                                System.out.println(newX);
-                                System.out.println(newY);
-                                System.out.println("piece done moving");
+//                                System.out.println(newX);
+//                                System.out.println(newY);
+//                                System.out.println("piece done moving");
                             }
                             HandleSound(CastleBoardGame2UI.class.getResourceAsStream("/Resources/marchShort.wav"));
                             grid[x][y].teamOccupying = -1;
@@ -509,8 +509,8 @@ public class CastleBoardGame2UI {
                         //Stone color
                         stone[i][j].setIcon(stoneImage);
                         grid[i][j].terrainType = "wall";
-                        System.out.println(i);
-                          System.out.println(j);
+//                        System.out.println(i);
+//                          System.out.println(j);
                     
                        
                     
@@ -659,7 +659,7 @@ public class CastleBoardGame2UI {
             clip.start();
             Thread.sleep(100);
         } catch (Exception e) {
-            System.out.println(e);
+//            System.out.println(e);
         }
     }
 
@@ -669,7 +669,7 @@ public class CastleBoardGame2UI {
         try {
             image = ImageIO.read((CastleBoardGame2UI.class.getResourceAsStream("/Resources/" + fileName)));
         } catch (Exception e) {
-            System.out.println(e);
+//            System.out.println(e);
         }
         Image sImage = image.getScaledInstance(height, width, Image.SCALE_SMOOTH);
         return new ImageIcon(sImage);
