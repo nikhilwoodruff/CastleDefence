@@ -38,7 +38,7 @@ public class CastleBoardGame2UI {
 
     int[][] blueStart = {{5, 5}, {15, 5}, {9, 5}, {11, 5}, {5, 14}, {15, 14}, {9, 11}, {11, 11}};
     //ANIMATION VALUES
-    int moveSpeed = 1000; //Time in ms for piece to move
+    int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
     boolean[] done = new boolean[40]; //Player cannot move after combat or climbing
     int blueScore = 0;
@@ -328,7 +328,7 @@ public class CastleBoardGame2UI {
                     if (team == currentTeam) {
                         setUpHighlighters(pieces, moving, highlighters, anim, directions);
                     } else {
-                        //System.out.println("Not your piece!");
+                        System.out.println("Not your piece!");
                     }
                 }
 
@@ -479,7 +479,7 @@ public class CastleBoardGame2UI {
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
-                JLabel label = (JLabel) e.getSource();
+                //JLabel label = (JLabel) e.getSource();
                 //Label.setBackground(Color.red);
                 //System.out.println(label.getLocation());
                 HandleSound(CastleBoardGame2UI.class.getResourceAsStream("/Resources/ClickSound.wav"));
@@ -640,6 +640,10 @@ public class CastleBoardGame2UI {
                 count++;
             }
         }
+        else
+        {
+            System.out.println(done[moving]);
+        }
     }
 
     public int rollDice(JLabel dice) {
@@ -682,6 +686,10 @@ public class CastleBoardGame2UI {
             currentTeam = 1 - currentTeam;
             for (int i = 0; i < 20; i++) {
                 done[i] = false;
+            }
+            for(boolean value : done)
+            {
+                value = false;
             }
             if (currentTeam == 0) {
                 MovementAnimation.newAnimation(anim, fog, 0, -1100, 1000);
