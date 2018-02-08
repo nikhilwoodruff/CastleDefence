@@ -37,7 +37,7 @@ import javax.swing.UIManager;
 public class CastleBoardGame2UI {
     int[][] blueStart = {{5, 5}, {15, 5}, {9, 5}, {11, 5}, {5, 14}, {15, 14}, {9, 11}, {11, 11}};
     //ANIMATION VALUES
-    int moveSpeed = 1000; //Time in ms for piece to move
+    int moveSpeed = 500; //Time in ms for piece to move
     int highlighterSpeed = 500; //Time in ms for highlighters to come and go
     boolean[] done = new boolean[40]; //Player cannot move after combat or climbing
     int blueScore = 0;
@@ -51,7 +51,7 @@ public class CastleBoardGame2UI {
     ArrayList<JLabel> pieces = new ArrayList<>();
     ArrayList<JLabel> highlighters = new ArrayList<>();
     int[][] directions = new int[][] {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
-    Terrain[][] grid = new Terrain[22][21];
+    Terrain[][] grid = new Terrain[21][20];
     String playerName1;
     String playerName2;
     int numberOfReinforcements = 0;
@@ -148,13 +148,8 @@ frame.setLocationRelativeTo(null);
         {
             
         }
-        for(int i = 0; i < 20; i++){
-            for(int j = 0; j < 19; j++){
-                grid[i][j] = new Terrain();
-            }
-        }
-        for (int i = 5; i < 15; i++){
-            for(int j = 5; j < 15; j++){
+        for(int i = 0; i < 21; i++){
+            for(int j = 0; j < 20; j++){
                 grid[i][j] = new Terrain();
             }
         }
@@ -364,7 +359,6 @@ frame.setLocationRelativeTo(null);
                         JLabel target = pieces.get(moving);
                         int x = (int) Math.round(target.getLocation().x / 50);
                         int y = (int) Math.round(target.getLocation().y / 50);
-                        
                         int newX = x - directions[countFinal][0];
                         int newY = y - directions[countFinal][1];
                         for(JLabel label : highlighters)
@@ -500,7 +494,7 @@ frame.setLocationRelativeTo(null);
                     if ((j == 5) || (j == 15)) {
                         //Stone color
                         stone[i].setIcon(stoneImage);
-                        grid[i][j] = new Terrain("wall");
+                        grid[j][i] = new Terrain("wall");
                     } else {
                         Integer diceInt;
                         Random rand = new Random();
@@ -508,33 +502,33 @@ frame.setLocationRelativeTo(null);
                         if (diceInt > 2) {
                             //Grass color
                             stone[i].setIcon(grassImage);
-                            grid[i][j] = new Terrain("grass");
+                            grid[j][i] = new Terrain("grass");
                         } else {
                             //Dirt color
                             stone[i].setIcon(dirtImage);
-                            grid[i][j] = new Terrain("hill");
+                            grid[j][i] = new Terrain("hill");
                         }
                         if ((i >= 5 && i < 15) && j >= 6 && j < 15) {
                             //Castle color
                             stone[i].setIcon(InteriorImage);
-                            grid[i][j] = new Terrain("wood");
+                            grid[j][i] = new Terrain("wood");
                         }
                         //Sets the color of the walls
                         if (i == 5 && j < 15 && j >= 5) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[i][j] = new Terrain("wall");
+                            grid[j][i] = new Terrain("wall");
                         }
                         if (i == 14 && j < 15 && j >= 5) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[i][j] = new Terrain("wall");
+                            grid[j][i] = new Terrain("wall");
                         }
                         //Sets the color of the keep
                         if ((i == 9 || i == 10) && j == 10) {
                             //Stone color
                             stone[i].setIcon(stoneImage);
-                            grid[i][j] = new Terrain("wood");
+                            grid[j][i] = new Terrain("wood");
                         }
                     }
                 } else {
@@ -544,11 +538,11 @@ frame.setLocationRelativeTo(null);
                     if (diceInt > 2) {
                         //Grass color
                         stone[i].setIcon(grassImage);
-                        grid[i][j] = new Terrain("grass");
+                        grid[j][i] = new Terrain("grass");
                     } else {
                         //dirt color
                         stone[i].setIcon(dirtImage);
-                        grid[i][j] = new Terrain("hill");
+                        grid[j][i] = new Terrain("hill");
                     }
                 }
                 stone[i].setLocation(j * 50, i * 50);
