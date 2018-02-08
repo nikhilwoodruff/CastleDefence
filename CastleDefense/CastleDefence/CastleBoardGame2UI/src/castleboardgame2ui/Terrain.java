@@ -38,7 +38,7 @@ public class Terrain {
                 break;
             case "wood":
                 defendingBonus = 15;
-                attackingBonus = 10;
+                attackingBonus = 0;
             case "wall":
                 defendingBonus = 40;
                 attackingBonus = 15;
